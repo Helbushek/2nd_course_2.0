@@ -1,15 +1,17 @@
 #include "fileSort.h"
-#include <iostream>
-#include <fstream>
-#include <ios>
-#include <random>
 
-
-bool createFileWithRandomNumbers(const std::string& fileName, const int numbersCount, const int maxNumberValue) {
+std::ofstream createEmptyFile(const std::string& fileName) {
 	std::ofstream fileStream(fileName);
 
-	if (!fileStream.is_open()) 
-		return false;
+	if (!fileStream.is_open())
+		return std::ofstream();
+	
+	return fileStream;
+}
+
+bool createFileWithRandomNumbers(const std::string& fileName, const int numbersCount, const int maxNumberValue) {
+	
+	std::ofstream fileStream = createEmptyFile(fileName);
 
 	/* Seed */
 	std::random_device rd;
@@ -44,7 +46,28 @@ bool isFileContainsSortedArray(const std::string& fileName) {
 	return true;
 }
 
-bool sortFile(const std::string& fileName) {
+std::vector<std::ofstream> createFilesArray(const int& filesCount) {
+	std::vector<std::ofstream> result;
+	for (int i = 0; i < filesCount; ++i) {
+
+		std::string fileName = "fileNo" + std::to_string(i) + ".txt";
+		result.push_back(createEmptyFile(fileName));
+	}
+	return result;
+}
+
+bool sortFile(const std::string& fileName, const int fileCount) {
+	// I. splitting phase 
+
+	// Need an array, containing all files name, or stream names, just to be able to manipulate with them.
+	std::vector<std::ofstream> fileContainer = createFilesArray(fileCount);
+
+	for (int i = 0; i < fileCount; ++i) {
+		
+	}
+
+	// II. Merging phase
+
 
 	return true;
 }
