@@ -5,15 +5,23 @@
 #include <ios>
 #include <random>
 #include <vector>
+#include <xiosbase>
+/// <summary>
+/// amount of files that will be used during sorting
+/// </summary>
+const int FILE_COUNT = 10;
 
-bool sortFile(const std::string& fileName, const int fileCount = 10);
+std::fstream createEmptyFile(const std::string& fileName);
 
 bool createFileWithRandomNumbers(const std::string& fileName, const int numbersCount, const int maxNumberValue);
 
+std::vector<std::fstream> createFilesArray(const int& filesCount);
+
 bool isFileContainsSortedArray(const std::string& fileName);
 
-int createAndSortFile(const std::string& fileName, const int numbersCount, const int maxNumberValue);
+bool sortFile(const std::string& fileName, const int fileCount = FILE_COUNT);
 
-std::ofstream createEmptyFile(const std::string& fileName);
+int createAndSortFile(const std::string& fileName, const int numbersCount, const int maxNumberValue, const int fileCount = FILE_COUNT);
 
-std::vector<std::ofstream> createFilesArray(const int& filesCount);
+
+
