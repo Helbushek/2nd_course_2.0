@@ -7,6 +7,7 @@ std::fstream createEmptyFile(const std::string& fileName) {
 	if (!fileStream.is_open())
 		return std::fstream();
 	
+	fileStream.close();
 	return fileStream;
 }
 
@@ -71,7 +72,129 @@ bool isFileContainsSortedArray(const std::string& fileName)  {
 		if (val1 > val2) 
 			return false;
 	}
+	fileStream.close();
 	return true;
+}
+
+int devideFile(const std::string& fileName, int& minCount) {
+	std::fstream workingFile(fileName, std::ios_base::in);
+	std::fstream toCopy(std::string("copy" + fileName), std::ios_base::out);
+
+	minCount = 0;
+	int first, second, sortedPartsCounter = 0;
+	workingFile >> first >> second;
+	while (workingFile) {
+		if (first != INT_MIN) {
+			toCopy << first << ' ';
+		}
+		else if (first == INT_MIN) {
+			++minCount;
+		}
+		if (first > second) {
+			++sortedPartsCounter;
+			toCopy << INT_MIN << ' ';
+		}
+		first = second;
+		workingFile >> second;
+	}
+	toCopy << second << ' ';
+	workingFile.swap(toCopy);
+
+	workingFile.close();
+	toCopy.close();
+	return sortedPartsCounter+1;
+}
+
+int sumVector(std::vector<int> vector) {
+	int sum = 0;
+	for (auto i : vector) {
+		sum += i;
+	}
+	return sum;
+}
+
+void openVector(std::vector<std::fstream> fileVector, std::ios_base::openmode type) {
+	for (int i = 0; i < fileVector.size(); ++i) {
+		fileVector[i].open("fileNo" + std::to_string(i) + ".txt", type);
+	}
+}
+
+struct interConnect {
+	interConnect(void) 
+		:fileCount{}
+		, fileName{}
+		, levelCount{}
+		, main{}
+		, ip{}
+		, ms{}
+		, fileContainer{}
+	{ return; }
+	const int fileCount;
+	const std::string fileName;
+	int levelCount;
+	std::fstream main;
+	std::vector<int> ip;
+	std::vector<int> ms;
+	std::vector<std::fstream> fileContainer;
+};
+
+void startSetup(interConnect &base) {
+	base.fileContainer = createFilesArray(base.fileCount);
+	
+	base.levelCount = 1;
+	base.main.open("copy" + base.fileName);
+
+	for (int i = 0; i < base.fileCount; ++i) {
+		base.ip.push_back(1);
+		base.ms.push_back(1);
+	}
+	base.ip.push_back(0);
+	base.ms.push_back(0);
+
+	openVector(base.fileContainer, std::ios_base::out);
+}
+
+void splitFile(interConnect& base) {
+	startSetup(base);
+	
+	int ip0;
+	int i = 0;
+	while (!base.main) {
+		int buf;
+		base.main >> buf;
+		while (buf != INT_MIN) {
+			base.fileContainer[i] << buf << ' ';
+			base.main >> buf;
+		}
+		base.fileContainer[i] << INT_MIN << ' ';
+		--base.ms[i];
+		if (!base.main) {
+			continue;
+		}
+		if (base.ms[i] < base.ms[i + 1]) {
+			++i;
+			continue;
+		} else {
+			if (base.ms[i]==0) {
+				++base.levelCount;
+				ip0 = base.ip[0];
+				i = 0;
+				for (int k = 0; k < base.fileCount - 1; ++k) {
+					base.ms[k] = base.ms[k + 1] - base.ip[k] + ip0;
+					base.ip[k] = base.ip[k + 1] + ip0;
+				}
+				continue;
+			}
+			else {
+				i = 0;
+				continue;
+			}
+		}
+	}
+}
+
+void mergeFile(interConnect& base) {
+
 }
 
 /// <summary>
@@ -82,40 +205,14 @@ bool isFileContainsSortedArray(const std::string& fileName)  {
 /// <returns> false is something wrong and true if file is sorted</returns>
 bool sortFile(const std::string& fileName, const int fileCount) {
 	// I. splitting phase 
-
-	// Need to rewrite main file to new one just to split sorted parts. 
-	std::fstream workingFile(fileName); 
-	std::fstream toCopy(std::string("copy" + fileName), std::ios_base::out);
+	int minCount;
+	int splitedParts = devideFile(fileName, minCount);
+	interConnect base;
+	splitFile(base);
 	
-	int first, second, minCounter=0, sortedCounter=0;
-	workingFile >> first;
-	while (workingFile>>second) {
-		toCopy << first << ' ';
-		if (first == INT_MIN) {
-			++minCounter;
-		}
-		if (second == INT_MIN) {
-			++minCounter;
-		}
-		if (first > second) {
-			++sortedCounter;
-			toCopy << INT_MIN << ' ';
-		}
-		first = second;
-	}
-	toCopy << second << ' ';
-	workingFile.swap(toCopy);
-
-	++sortedCounter;
-
-	
-
-	// Need an array, containing all files name, or stream names, just to be able to manipulate with them. [done]
-	std::vector<std::fstream> fileContainer = createFilesArray(fileCount);
-
 
 	// II. Merging phase
-
+	mergeFile(base);
 
 	return true;
 }
