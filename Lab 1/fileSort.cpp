@@ -119,6 +119,12 @@ void openVector(std::vector<std::fstream> fileVector, std::ios_base::openmode ty
 	}
 }
 
+void closeVector(std::vector<std::fstream> fileVector) {
+	for (int i = 0; i < fileVector.size(); ++i) {
+		fileVector[i].close();
+	}
+}
+
 struct interConnect {
 	interConnect(void) 
 		:fileCount{}
@@ -193,8 +199,43 @@ void splitFile(interConnect& base) {
 	}
 }
 
-void mergeFile(interConnect& base) {
+std::vector<int> readOnce(std::vector<std::fstream>& container) {
+	std::vector<int> result;
+	int temp=0;
+	for (int i = 0; i < container.size(); ++i) {
+		container[i] >> temp;
+		result.push_back(temp);
+	}
+	return result;
+}
 
+int findMin(std::vector<int>& result) {
+	int min=result[0], index=0;
+	for (int i = 1; i < result.size(); ++i) {
+		if (result[i] < min) {
+			min = result[i];
+			index = i;
+		}
+	}
+	return index;
+}
+
+void readMin(std::vector<std::fstream>& container, std::vector<int>& result, int& min, int& minIndex) {
+	minIndex = findMin(result);
+	container[minIndex] >> min;
+}
+
+void mergeFile(interConnect& base) {
+	closeVector(base.fileContainer);
+	openVector(base.fileContainer, std::ios_base::in);
+	base.fileContainer[base.fileCount - 1].open("fileNo" + std::to_string(base.fileCount - 1) + ".txt", std::ios_base::out);
+
+	while (base.levelCount > 0) {
+		int index = base.fileContainer.size() - 2;
+		while (base.fileContainer[index]) {
+
+		}
+	}
 }
 
 /// <summary>
@@ -209,8 +250,6 @@ bool sortFile(const std::string& fileName, const int fileCount) {
 	int splitedParts = devideFile(fileName, minCount);
 	interConnect base;
 	splitFile(base);
-	
-
 	// II. Merging phase
 	mergeFile(base);
 
