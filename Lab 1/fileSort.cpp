@@ -113,13 +113,13 @@ int sumVector(std::vector<int> vector) {
 	return sum;
 }
 
-void openVector(std::vector<std::fstream> fileVector, std::ios_base::openmode type) {
+void openVector(std::vector<std::fstream>& fileVector, std::ios_base::openmode type) {
 	for (int i = 0; i < fileVector.size(); ++i) {
 		fileVector[i].open("fileNo" + std::to_string(i) + ".txt", type);
 	}
 }
 
-void closeVector(std::vector<std::fstream> fileVector) {
+void closeVector(std::vector<std::fstream>& fileVector) {
 	for (int i = 0; i < fileVector.size(); ++i) {
 		fileVector[i].close();
 	}
@@ -158,6 +158,8 @@ void startSetup(interConnect &base) {
 	base.ms.push_back(0);
 
 	openVector(base.fileContainer, std::ios_base::out);
+	base.fileContainer[base.fileCount - 1].close();
+	base.fileContainer[base.fileCount - 2].close();
 }
 
 void splitFile(interConnect& base) {
@@ -175,6 +177,7 @@ void splitFile(interConnect& base) {
 		base.fileContainer[i] << INT_MIN << ' ';
 		--base.ms[i];
 		if (!base.main) {
+			closeVector(base.fileContainer);
 			continue;
 		}
 		if (base.ms[i] < base.ms[i + 1]) {
@@ -199,20 +202,36 @@ void splitFile(interConnect& base) {
 	}
 }
 
-std::vector<int> readOnce(std::vector<std::fstream>& container) {
+std::vector<int> readOnce(std::vector<std::fstream>& container, int exception) {
 	std::vector<int> result;
 	int temp=0;
 	for (int i = 0; i < container.size(); ++i) {
-		container[i] >> temp;
-		result.push_back(temp);
+		if (i!=exception) {
+			container[i] >> temp;
+			result.push_back(temp);
+		}
+		else {
+			result.push_back(INT_MIN);
+		}
 	}
 	return result;
 }
 
+bool skipSeparator(std::vector<std::fstream>& container) {
+	bool flag = true;
+	int temp;
+	for (int i = 0; i < container.size(); ++i) {
+		container[i] >> temp;
+		if (temp != INT_MIN)
+			flag = false;
+	}
+	return flag;
+}
+
 int findMin(std::vector<int>& result) {
-	int min=result[0], index=0;
+	int min=result[0], index = -1;
 	for (int i = 1; i < result.size(); ++i) {
-		if (result[i] < min) {
+		if (result[i] < min && result[i]!=INT_MIN) {
 			min = result[i];
 			index = i;
 		}
@@ -220,9 +239,20 @@ int findMin(std::vector<int>& result) {
 	return index;
 }
 
-void readMin(std::vector<std::fstream>& container, std::vector<int>& result, int& min, int& minIndex) {
-	minIndex = findMin(result);
-	container[minIndex] >> min;
+
+
+void mergeOneBit(std::vector<std::fstream>& container, std::vector<int>& temp, int indexToMerge) {
+	int min, minIndex = findMin(temp);
+	if (minIndex != -1) {
+		min = temp[minIndex];
+		container[indexToMerge] << min << ' ';
+		container[minIndex] >> temp[minIndex];
+	} else {
+		container[indexToMerge] << INT_MIN << ' ';
+		if (!skipSeparator(container)) {
+			exit(12); //must not be expected, but i think better safe than sorry 
+		}
+	}
 }
 
 void mergeFile(interConnect& base) {
@@ -230,9 +260,12 @@ void mergeFile(interConnect& base) {
 	openVector(base.fileContainer, std::ios_base::in);
 	base.fileContainer[base.fileCount - 1].open("fileNo" + std::to_string(base.fileCount - 1) + ".txt", std::ios_base::out);
 
+	std::vector<int> temp;
 	while (base.levelCount > 0) {
-		int index = base.fileContainer.size() - 2;
-		while (base.fileContainer[index]) {
+		int index = base.fileContainer.size() - 1;	
+		while (base.fileContainer[index-1]) {
+			temp = readOnce(base.fileContainer, index);
+			mergeOneBit(base.fileContainer, temp, index);
 
 		}
 	}
