@@ -1,14 +1,14 @@
 #include "fileSort.h"
 
 
-std::fstream createEmptyFile(const std::string& fileName) {
+bool createEmptyFile(const std::string& fileName) {
 	std::fstream fileStream(fileName);
 
 	if (!fileStream.is_open())
-		return std::fstream();
+		return false;
 	
 	fileStream.close();
-	return fileStream;
+	return true;
 }
 
 /// <summary>
@@ -44,14 +44,15 @@ bool createFileWithRandomNumbers(const std::string& fileName, const int numbersC
 /// </summary>
 /// <param name="filesCount">: amount of files to be created</param>
 /// <returns>vector of fstreams </returns>
-std::vector<std::fstream> createFilesArray(const int& filesCount) { //
-	std::vector<std::fstream> result;
+void createFilesArray(const int& filesCount, std::vector<std::fstream *>& result) {
 	for (int i = 0; i < filesCount; ++i) {
 
 		std::string fileName = "fileNo" + std::to_string(i) + ".txt";
-		result.push_back(createEmptyFile(fileName));
+		std::fstream* ptr = new std::fstream();
+		ptr->open(fileName);
+		result.push_back(ptr);
 	}
-	return result;
+	return;
 }
 
 /// <summary>
@@ -113,15 +114,16 @@ int sumVector(std::vector<int> vector) {
 	return sum;
 }
 
-void openVector(std::vector<std::fstream>& fileVector, std::ios_base::openmode type) {
+void openVector(std::vector<std::fstream*>& fileVector, std::ios_base::openmode type) {
 	for (int i = 0; i < fileVector.size(); ++i) {
-		fileVector[i].open("fileNo" + std::to_string(i) + ".txt", type);
+		fileVector[i]->open("fileNo" + std::to_string(i) + ".txt", type);
 	}
 }
 
-void closeVector(std::vector<std::fstream>& fileVector) {
+void closeVector(std::vector<std::fstream*>& fileVector) {
 	for (int i = 0; i < fileVector.size(); ++i) {
-		fileVector[i].close();
+		if (fileVector[i]->is_open())
+			fileVector[i]->close();
 	}
 }
 
@@ -130,25 +132,21 @@ struct interConnect {
 		:fileCount{}
 		, fileName{}
 		, levelCount{}
-		, main{}
 		, ip{}
 		, ms{}
-		, fileContainer{}
-	{ return; }
-	const int fileCount;
-	const std::string fileName;
+	{return; }
+	int fileCount;
+	std::string fileName;
 	int levelCount;
-	std::fstream main;
 	std::vector<int> ip;
 	std::vector<int> ms;
-	std::vector<std::fstream> fileContainer;
+	
 };
 
-void startSetup(interConnect &base) {
-	base.fileContainer = createFilesArray(base.fileCount);
-	
+void startSetup(interConnect& base, std::fstream& main, std::vector<std::fstream*>& fileContainer) {
+	createFilesArray(base.fileCount, fileContainer);
 	base.levelCount = 1;
-	base.main.open("copy" + base.fileName);
+	main.open("copy" + base.fileName);
 
 	for (int i = 0; i < base.fileCount; ++i) {
 		base.ip.push_back(1);
@@ -157,27 +155,28 @@ void startSetup(interConnect &base) {
 	base.ip.push_back(0);
 	base.ms.push_back(0);
 
-	openVector(base.fileContainer, std::ios_base::out);
-	base.fileContainer[base.fileCount - 1].close();
-	base.fileContainer[base.fileCount - 2].close();
+	openVector(fileContainer, std::ios_base::out);
+	fileContainer[base.fileCount - 1]->close();
+	fileContainer[base.fileCount - 2]->close();
 }
 
-void splitFile(interConnect& base) {
-	startSetup(base);
+void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*>& fileContainer) {
+	main.open("copy"+ base.fileName);
+	startSetup(base, main, fileContainer);
 	
 	int ip0;
 	int i = 0;
-	while (!base.main) {
+	while (!main.eof()) {
 		int buf;
-		base.main >> buf;
+		main >> buf;
 		while (buf != INT_MIN) {
-			base.fileContainer[i] << buf << ' ';
-			base.main >> buf;
+			(*fileContainer[i]) << buf << ' ';
+			main >> buf;
 		}
-		base.fileContainer[i] << INT_MIN << ' ';
+		(*fileContainer[i]) << INT_MIN << ' ';
 		--base.ms[i];
-		if (!base.main) {
-			closeVector(base.fileContainer);
+		if (!main) {
+			closeVector(fileContainer);
 			continue;
 		}
 		if (base.ms[i] < base.ms[i + 1]) {
@@ -202,26 +201,11 @@ void splitFile(interConnect& base) {
 	}
 }
 
-std::vector<int> readOnce(std::vector<std::fstream>& container, int exception) {
-	std::vector<int> result;
-	int temp=0;
-	for (int i = 0; i < container.size(); ++i) {
-		if (i!=exception) {
-			container[i] >> temp;
-			result.push_back(temp);
-		}
-		else {
-			result.push_back(INT_MIN);
-		}
-	}
-	return result;
-}
-
-bool skipSeparator(std::vector<std::fstream>& container) {
+bool skipSeparator(std::vector<std::fstream*>& container) {
 	bool flag = true;
 	int temp;
 	for (int i = 0; i < container.size(); ++i) {
-		container[i] >> temp;
+		(*container[i]) >> temp;
 		if (temp != INT_MIN)
 			flag = false;
 	}
@@ -239,35 +223,88 @@ int findMin(std::vector<int>& result) {
 	return index;
 }
 
-
-
-void mergeOneBit(std::vector<std::fstream>& container, std::vector<int>& temp, int indexToMerge) {
-	int min, minIndex = findMin(temp);
-	if (minIndex != -1) {
-		min = temp[minIndex];
-		container[indexToMerge] << min << ' ';
-		container[minIndex] >> temp[minIndex];
-	} else {
-		container[indexToMerge] << INT_MIN << ' ';
-		if (!skipSeparator(container)) {
-			exit(12); //must not be expected, but i think better safe than sorry 
+bool isNotEmpty(std::vector<int> vector) {
+	bool flag = true;
+	for (int i = 0; i < vector.size(); ++i) {
+		if (vector[i] == 0) {
+			flag = false;
 		}
+	}
+	return flag;
+}
+
+std::vector<int> readOnce(std::vector<std::fstream*>& container) {
+	std::vector<int> result;
+	int temp = 0;
+	for (int i = 0; i < container.size(); ++i) {
+		(*container[i]) >> temp;
+		result.push_back(temp);
+	}
+	return result;
+}
+
+void shiftRight(std::vector<std::fstream*>& vector) {
+	for (int i = vector.size() - 1; i > 0; --i) {
+		std::swap(vector[i], vector[i - 1]);
 	}
 }
 
-void mergeFile(interConnect& base) {
-	closeVector(base.fileContainer);
-	openVector(base.fileContainer, std::ios_base::in);
-	base.fileContainer[base.fileCount - 1].open("fileNo" + std::to_string(base.fileCount - 1) + ".txt", std::ios_base::out);
+void shiftRight(std::vector<int>& vector) {
+	for (int i = vector.size() - 1; i > 0; --i) {
+		std::swap(vector[i], vector[i - 1]);
+	}
+}
 
-	std::vector<int> temp;
-	while (base.levelCount > 0) {
-		int index = base.fileContainer.size() - 1;	
-		while (base.fileContainer[index-1]) {
-			temp = readOnce(base.fileContainer, index);
-			mergeOneBit(base.fileContainer, temp, index);
+void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
+	closeVector(fileContainer);
+	openVector(fileContainer, std::ios_base::in);
 
+	int index = base.fileCount - 1, index2;
+	index2 = index - 1; 
+	if (index2 == -1) {
+		index2 = base.fileCount - 1;
+	}
+	while (base.levelCount != 0) {
+		fileContainer[index]->open("fileNo" + std::to_string(index) + ".txt", std::ios_base::out);
+
+		std::vector<int> temp;
+
+		while (fileContainer[index2]) {
+			while (isNotEmpty(base.ms)) {
+				for (int i = 0; i < base.fileCount; ++i) {
+					if (i != index) {
+						--base.ms[i];
+					}
+				}
+			}
+			++base.ms[index];
+
+			base.ip = readOnce(fileContainer);
+			for (int i = 0; i < base.fileCount; ++i) {
+				if (base.ms[i] != 0) {
+					--base.ms[i];
+				}
+			}
+
+			int minIndex = findMin(base.ip);
+			while (minIndex != -1) {
+				(*fileContainer[index]) << base.ip[minIndex];
+				(*fileContainer[minIndex]) >> base.ip[minIndex];
+			}
 		}
+		fileContainer[index]->close();
+		fileContainer[index2]->close();
+
+		fileContainer[index]->open("fileNo" + std::to_string(index) + ".txt", std::ios_base::in);
+		fileContainer[index2]->open("fileNo" + std::to_string(index2) + ".txt", std::ios_base::out);
+		
+		shiftRight(fileContainer);
+		shiftRight(base.ms);
+		shiftRight(base.ip);
+
+		skipSeparator(fileContainer);
+
+		--base.levelCount;
 	}
 }
 
@@ -281,10 +318,14 @@ bool sortFile(const std::string& fileName, const int fileCount) {
 	// I. splitting phase 
 	int minCount;
 	int splitedParts = devideFile(fileName, minCount);
-	interConnect base;
-	splitFile(base);
+	interConnect base{};
+	base.fileCount = fileCount;
+	base.fileName = fileName;
+	std::fstream main;
+	std::vector<std::fstream*> fileContainer;
+	splitFile(base, main, fileContainer);
 	// II. Merging phase
-	mergeFile(base);
+	mergeFile(base, fileContainer);
 
 	return true;
 }

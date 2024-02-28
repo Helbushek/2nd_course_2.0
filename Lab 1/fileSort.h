@@ -11,11 +11,11 @@
 /// </summary>
 const int FILE_COUNT = 10;
 
-std::fstream createEmptyFile(const std::string& fileName);
+bool createEmptyFile(const std::string& fileName);
 
 bool createFileWithRandomNumbers(const std::string& fileName, const int numbersCount, const int maxNumberValue);
 
-std::vector<std::fstream> createFilesArray(const int& filesCount);
+void createFilesArray(const int& filesCount);
 
 bool isFileContainsSortedArray(const std::string& fileName);
 
