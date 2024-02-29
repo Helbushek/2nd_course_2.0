@@ -2,7 +2,7 @@
 
 
 bool createEmptyFile(const std::string& fileName) {
-	std::fstream fileStream(fileName);
+	std::fstream fileStream(fileName, std::ios_base::out);
 
 	if (!fileStream.is_open())
 		return false;
@@ -22,6 +22,8 @@ bool createFileWithRandomNumbers(const std::string& fileName, const int numbersC
 	
 	std::fstream fileStream(fileName, std::ios_base::out);
 
+	 // copied from stack overflow start
+
 	/* Seed */
 	std::random_device rd;
 
@@ -30,6 +32,9 @@ bool createFileWithRandomNumbers(const std::string& fileName, const int numbersC
 
 	/* Distribution on which to apply the generator */
 	std::uniform_int_distribution<int> distribution(-maxNumberValue, maxNumberValue);
+	 
+	// copied from stack overflow end
+
 
 	for (int i = 0; i < numbersCount; ++i) {
 		fileStream << distribution(generator) << " ";
@@ -44,15 +49,22 @@ bool createFileWithRandomNumbers(const std::string& fileName, const int numbersC
 /// </summary>
 /// <param name="filesCount">: amount of files to be created</param>
 /// <returns>vector of fstreams </returns>
-void createFilesArray(const int& filesCount, std::vector<std::fstream *>& result) {
+bool createFilesArray(const int& filesCount, std::vector<std::fstream*>& result) {
+	std::fstream* ptr = nullptr;
+	std::string fileName;
 	for (int i = 0; i < filesCount; ++i) {
-
-		std::string fileName = "fileNo" + std::to_string(i) + ".txt";
-		std::fstream* ptr = new std::fstream();
-		ptr->open(fileName);
-		result.push_back(ptr);
+		fileName = "fileNo" + std::to_string(i) + ".txt";
+		ptr = new std::fstream(fileName);
+		ptr->open(fileName, std::ios_base::out);
+		if (ptr->is_open()) {
+			result.push_back(ptr);
+			ptr->close();
+		}
+		else {
+			return 0;
+		}
 	}
-	return;
+	return 1;
 }
 
 /// <summary>
@@ -127,26 +139,10 @@ void closeVector(std::vector<std::fstream*>& fileVector) {
 	}
 }
 
-struct interConnect {
-	interConnect(void) 
-		:fileCount{}
-		, fileName{}
-		, levelCount{}
-		, ip{}
-		, ms{}
-	{return; }
-	int fileCount;
-	std::string fileName;
-	int levelCount;
-	std::vector<int> ip;
-	std::vector<int> ms;
-	
-};
-
 void startSetup(interConnect& base, std::fstream& main, std::vector<std::fstream*>& fileContainer) {
 	createFilesArray(base.fileCount, fileContainer);
 	base.levelCount = 1;
-	main.open("copy" + base.fileName);
+	main.open("copy" + base.fileName, std::ios_base::in);
 
 	for (int i = 0; i < base.fileCount; ++i) {
 		base.ip.push_back(1);
@@ -156,20 +152,17 @@ void startSetup(interConnect& base, std::fstream& main, std::vector<std::fstream
 	base.ms.push_back(0);
 
 	openVector(fileContainer, std::ios_base::out);
-	fileContainer[base.fileCount - 1]->close();
-	fileContainer[base.fileCount - 2]->close();
 }
 
 void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*>& fileContainer) {
-	main.open("copy"+ base.fileName);
 	startSetup(base, main, fileContainer);
-	
+
 	int ip0;
 	int i = 0;
 	while (!main.eof()) {
-		int buf;
+		int buf=0;
 		main >> buf;
-		while (buf != INT_MIN) {
+		while (buf != INT_MIN && main) {
 			(*fileContainer[i]) << buf << ' ';
 			main >> buf;
 		}
@@ -188,7 +181,7 @@ void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*
 				ip0 = base.ip[0];
 				i = 0;
 				for (int k = 0; k < base.fileCount - 1; ++k) {
-					base.ms[k] = base.ms[k + 1] - base.ip[k] + ip0;
+					base.ms[k] = base.ip[k + 1] - base.ip[k] + ip0;
 					base.ip[k] = base.ip[k + 1] + ip0;
 				}
 				continue;
@@ -198,7 +191,7 @@ void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*
 				continue;
 			}
 		}
-	}
+	}	
 }
 
 bool skipSeparator(std::vector<std::fstream*>& container) {
