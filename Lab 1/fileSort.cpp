@@ -251,18 +251,19 @@ void shiftRight(std::vector<int>& vector) {
 void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 	closeVector(fileContainer);
 	openVector(fileContainer, std::ios_base::in);
+	createEmptyFile("fileNo" + std::to_string(base.fileCount) + ".txt");
+	std::fstream last("fileNo" + std::to_string(base.fileCount) + ".txt"), *ptr = &last;
+	fileContainer.push_back(ptr);
 
-	int index = base.fileCount - 1, index2;
+	int index = base.fileCount, index2;
 	index2 = index - 1; 
-	if (index2 == -1) {
-		index2 = base.fileCount - 1;
-	}
+
 	while (base.levelCount != 0) {
-		fileContainer[index]->open("fileNo" + std::to_string(index) + ".txt", std::ios_base::out);
+		fileContainer[index]->open("fileNo" + std::to_string(index) + ".txt");
 
 		std::vector<int> temp;
 
-		while (fileContainer[index2]) {
+		while (!fileContainer[index2]->eof()) {
 			while (isNotEmpty(base.ms)) {
 				for (int i = 0; i < base.fileCount; ++i) {
 					if (i != index) {
@@ -271,25 +272,34 @@ void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 				}
 			}
 			++base.ms[index];
-
+			temp.clear();
 			base.ip = readOnce(fileContainer);
-			for (int i = 0; i < base.fileCount; ++i) {
-				if (base.ms[i] != 0) {
+			int buf;
+			for (int i = 0; i < index; ++i) {
+				if (base.ms[i] != 0 && i!=index) {
 					--base.ms[i];
+					temp.push_back(INT_MIN);
+				}
+				else {
+					(*fileContainer[i]) >> buf;
+					temp.push_back(buf);
 				}
 			}
 
-			int minIndex = findMin(base.ip);
-			while (minIndex != -1) {
-				(*fileContainer[index]) << base.ip[minIndex];
-				(*fileContainer[minIndex]) >> base.ip[minIndex];
+			int minIndex = findMin(temp);
+ 			while (minIndex != -1) {
+				(*fileContainer[index]) << temp[minIndex] << ' ';
+				(*fileContainer[minIndex]) >> temp[minIndex];
+				minIndex = findMin(temp);
+				if (minIndex == -1) {
+					(*fileContainer[index]) << INT_MIN << ' ';
+				}
 			}
-		}
-		fileContainer[index]->close();
-		fileContainer[index2]->close();
 
-		fileContainer[index]->open("fileNo" + std::to_string(index) + ".txt", std::ios_base::in);
-		fileContainer[index2]->open("fileNo" + std::to_string(index2) + ".txt", std::ios_base::out);
+
+		}
+
+		// 8
 		
 		shiftRight(fileContainer);
 		shiftRight(base.ms);
