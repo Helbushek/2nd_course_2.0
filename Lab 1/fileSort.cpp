@@ -144,7 +144,7 @@ void startSetup(interConnect& base, std::fstream& main, std::vector<std::fstream
 	base.levelCount = 1;
 	main.open("copy" + base.fileName, std::ios_base::in);
 
-	for (int i = 0; i < base.fileCount; ++i) {
+	for (int i = 0; i < base.fileCount-1; ++i) {
 		base.ip.push_back(1);
 		base.ms.push_back(1);
 	}
@@ -152,13 +152,16 @@ void startSetup(interConnect& base, std::fstream& main, std::vector<std::fstream
 	base.ms.push_back(0);
 
 	openVector(fileContainer, std::ios_base::out);
+	closeVector(fileContainer);
+	main.close();
 }
 
 void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*>& fileContainer) {
 	startSetup(base, main, fileContainer);
-
+	openVector(fileContainer, std::ios_base::out);
 	int ip0;
 	int i = 0;
+	main.open("copy" + base.fileName, std::ios_base::in);
 	while (!main.eof()) {
 		int buf=0;
 		main >> buf;
@@ -180,7 +183,7 @@ void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*
 				++base.levelCount;
 				ip0 = base.ip[0];
 				i = 0;
-				for (int k = 0; k < base.fileCount - 1; ++k) {
+				for (int k = 0; k < base.fileCount-1; ++k) {
 					base.ms[k] = base.ip[k + 1] - base.ip[k] + ip0;
 					base.ip[k] = base.ip[k + 1] + ip0;
 				}
@@ -191,13 +194,14 @@ void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*
 				continue;
 			}
 		}
-	}	
+	}
+	closeVector(fileContainer);
 }
 
 bool skipSeparator(std::vector<std::fstream*>& container) {
 	bool flag = true;
 	int temp;
-	for (int i = 0; i < container.size(); ++i) {
+	for (int i = 0; i < container.size()-1; ++i) {
 		(*container[i]) >> temp;
 		if (temp != INT_MIN)
 			flag = false;
@@ -206,9 +210,9 @@ bool skipSeparator(std::vector<std::fstream*>& container) {
 }
 
 int findMin(std::vector<int>& result) {
-	int min=result[0], index = -1;
-	for (int i = 1; i < result.size(); ++i) {
-		if (result[i] < min && result[i]!=INT_MIN) {
+	int min=INT_MAX, index = -1;
+	for (int i = 0; i < result.size(); ++i) {
+		if (result[i] <= min && result[i]!=INT_MIN) {
 			min = result[i];
 			index = i;
 		}
@@ -216,7 +220,7 @@ int findMin(std::vector<int>& result) {
 	return index;
 }
 
-bool isNotEmpty(std::vector<int> vector) {
+bool hasNoNull(std::vector<int> vector) {
 	bool flag = true;
 	for (int i = 0; i < vector.size(); ++i) {
 		if (vector[i] == 0) {
@@ -251,61 +255,74 @@ void shiftRight(std::vector<int>& vector) {
 void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 	closeVector(fileContainer);
 	openVector(fileContainer, std::ios_base::in);
-	createEmptyFile("fileNo" + std::to_string(base.fileCount) + ".txt");
-	std::fstream last("fileNo" + std::to_string(base.fileCount) + ".txt"), *ptr = &last;
+	std::fstream *ptr = new std::fstream();
 	fileContainer.push_back(ptr);
 
-	int index = base.fileCount, index2;
-	index2 = index - 1; 
+	int index = base.fileCount, index2 = index - 1;
+
+	fileContainer[index]->open("fileNo" + std::to_string(index) + ".txt", std::ios_base::out);
 
 	while (base.levelCount != 0) {
-		fileContainer[index]->open("fileNo" + std::to_string(index) + ".txt");
 
 		std::vector<int> temp;
 
-		while (!fileContainer[index2]->eof()) {
-			while (isNotEmpty(base.ms)) {
+		while (fileContainer[index2]->good()) {
+			while (hasNoNull(base.ms)) {
 				for (int i = 0; i < base.fileCount; ++i) {
 					if (i != index) {
 						--base.ms[i];
 					}
+					else {
+						++base.ms[index];
+					}
 				}
+				
 			}
-			++base.ms[index];
 			temp.clear();
-			base.ip = readOnce(fileContainer);
 			int buf;
 			for (int i = 0; i < index; ++i) {
-				if (base.ms[i] != 0 && i!=index) {
+				if (base.ms[i] > 0 && i!=index) {
 					--base.ms[i];
 					temp.push_back(INT_MIN);
 				}
-				else {
+				else if (base.ms[i]==0) {
 					(*fileContainer[i]) >> buf;
 					temp.push_back(buf);
 				}
 			}
 
+			// FIXME: check what can be wrong here
 			int minIndex = findMin(temp);
- 			while (minIndex != -1) {
+ 			while (minIndex != -1) { // !!!
 				(*fileContainer[index]) << temp[minIndex] << ' ';
-				(*fileContainer[minIndex]) >> temp[minIndex];
+				if (fileContainer[minIndex]->good()) {
+					(*fileContainer[minIndex]) >> temp[minIndex];
+				}
+				else {
+					temp[minIndex] = INT_MIN;
+				}
 				minIndex = findMin(temp);
 				if (minIndex == -1) {
 					(*fileContainer[index]) << INT_MIN << ' ';
 				}
 			}
 
-
 		}
 
 		// 8
 		
+		(*fileContainer[index]).clear();
+		(*fileContainer[index - 1]).clear();
+
+		(*fileContainer[index]).close();
+		(*fileContainer[index - 1]).close();
+
+		(*fileContainer[index]).open("fileNo" + std::to_string(index) + ".txt", std::ios_base::in);
+		(*fileContainer[index - 1]).open("fileNo" + std::to_string(index-1) + ".txt", std::ios_base::out);
+
 		shiftRight(fileContainer);
 		shiftRight(base.ms);
 		shiftRight(base.ip);
-
-		skipSeparator(fileContainer);
 
 		--base.levelCount;
 	}
@@ -317,7 +334,7 @@ void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 /// <param name="fileName"> name of file which will be sorted</param>
 /// <param name="fileCount"> number of files that will be used during sorting</param>
 /// <returns> false is something wrong and true if file is sorted</returns>
-bool sortFile(const std::string& fileName, const int fileCount) {
+bool sortFile(const std::string& fileName, int fileCount) {
 	// I. splitting phase 
 	int minCount;
 	int splitedParts = devideFile(fileName, minCount);

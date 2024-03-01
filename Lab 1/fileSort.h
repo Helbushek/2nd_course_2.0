@@ -53,7 +53,7 @@ bool skipSeparator(std::vector<std::fstream*>& container);
 
 int findMin(std::vector<int>& result);
 
-bool isNotEmpty(std::vector<int> vector);
+bool hasNoNull(std::vector<int> vector);
 
 std::vector<int> readOnce(std::vector<std::fstream*>& container);
 
