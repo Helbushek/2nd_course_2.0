@@ -98,19 +98,19 @@ int devideFile(const std::string& fileName, int& minCount) {
 	workingFile >> first >> second;
 	while (workingFile) {
 		if (first != INT_MIN) {
-			toCopy << first << ' ';
+			toCopy << ' '<< first;
 		}
 		else if (first == INT_MIN) {
 			++minCount;
 		}
 		if (first > second) {
 			++sortedPartsCounter;
-			toCopy << INT_MIN << ' ';
+			toCopy << ' '<< INT_MIN;
 		}
 		first = second;
 		workingFile >> second;
 	}
-	toCopy << second << ' ';
+	toCopy << ' '<< second;
 	workingFile.swap(toCopy);
 
 	workingFile.close();
@@ -165,11 +165,11 @@ void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*
 	while (!main.eof()) {
 		int buf=0;
 		main >> buf;
-		while (buf != INT_MIN && main) {
-			(*fileContainer[i]) << buf << ' ';
+			while (buf != INT_MIN && main) {
+			(*fileContainer[i]) << ' '<< buf;
 			main >> buf;
 		}
-		(*fileContainer[i]) << INT_MIN << ' ';
+		(*fileContainer[i]) << ' ' << INT_MIN;
 		--base.ms[i];
 		if (!main) {
 			closeVector(fileContainer);
@@ -255,18 +255,21 @@ void shiftRight(std::vector<int>& vector) {
 void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 	closeVector(fileContainer);
 	openVector(fileContainer, std::ios_base::in);
-	std::fstream *ptr = new std::fstream();
-	fileContainer.push_back(ptr);
+	//std::fstream *ptr = new std::fstream();
+	//fileContainer.push_back(ptr);
 
-	int index = base.fileCount, index2 = index - 1;
+	int index = base.fileCount-1, index2 = index - 1, shiftCount=0;
+	int indexAfterShift = index - shiftCount, index2AfterShift = indexAfterShift - 1;
 
+
+	fileContainer[index]->close();
 	fileContainer[index]->open("fileNo" + std::to_string(index) + ".txt", std::ios_base::out);
 
 	while (base.levelCount != 0) {
 
 		std::vector<int> temp;
 
-		while (fileContainer[index2]->good()) {
+		while (fileContainer[index2]->peek()!=EOF) {
 			while (hasNoNull(base.ms)) {
 				for (int i = 0; i < base.fileCount; ++i) {
 					if (i != index) {
@@ -293,7 +296,7 @@ void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 
 			// FIXME: check what can be wrong here
 			int minIndex = findMin(temp);
- 			while (minIndex != -1) { // !!!
+ 			while (minIndex != -1) { // fixed
 				(*fileContainer[index]) << temp[minIndex] << ' ';
 				if (fileContainer[minIndex]->good()) {
 					(*fileContainer[minIndex]) >> temp[minIndex];
@@ -306,25 +309,37 @@ void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 					(*fileContainer[index]) << INT_MIN << ' ';
 				}
 			}
-
-		}
+					}
 
 		// 8
+
+		fileContainer[index]->close();
+		fileContainer[index - 1]->close();
+
+		if (indexAfterShift == -1) {
+			indexAfterShift = base.fileCount - 1;
+		}
+		if (index2AfterShift == -1) {
+			index2AfterShift = base.fileCount - 1;
+		}
+
+		fileContainer[index]->open("fileNo" + std::to_string(indexAfterShift--) + ".txt", std::ios_base::in); // good now
+		fileContainer[index - 1]->open("fileNo" + std::to_string(index2AfterShift--) + ".txt", std::ios_base::out); // good now
 		
-		(*fileContainer[index]).clear();
-		(*fileContainer[index - 1]).clear();
-
-		(*fileContainer[index]).close();
-		(*fileContainer[index - 1]).close();
-
-		(*fileContainer[index]).open("fileNo" + std::to_string(index) + ".txt", std::ios_base::in);
-		(*fileContainer[index - 1]).open("fileNo" + std::to_string(index-1) + ".txt", std::ios_base::out);
-
 		shiftRight(fileContainer);
 		shiftRight(base.ms);
 		shiftRight(base.ip);
 
 		--base.levelCount;
+	}
+
+}
+
+void deleteFiles(int numberOfFiles) {
+	std::string temp;
+	for (int i = 0; i < numberOfFiles; ++i) {
+		temp = "fileNo" + std::to_string(i) + ".txt";
+		std::remove(temp.c_str());
 	}
 }
 
@@ -335,18 +350,70 @@ void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 /// <param name="fileCount"> number of files that will be used during sorting</param>
 /// <returns> false is something wrong and true if file is sorted</returns>
 bool sortFile(const std::string& fileName, int fileCount) {
+	std::string resultName = "result.txt";
+	std::remove(resultName.c_str());
+
 	// I. splitting phase 
 	int minCount;
 	int splitedParts = devideFile(fileName, minCount);
+	
 	interConnect base{};
+	
 	base.fileCount = fileCount;
 	base.fileName = fileName;
+	
 	std::fstream main;
 	std::vector<std::fstream*> fileContainer;
+	
 	splitFile(base, main, fileContainer);
+	
 	// II. Merging phase
+	
+	int fileShifts = base.levelCount;
+	
 	mergeFile(base, fileContainer);
+	
+	main.close();
+	main.open("copy" + fileName, std::ios_base::out);
+	
+	for (int i = 0; i < minCount; ++i) {
+		main << ' ' << INT_MIN;
+	}
+	
+	closeVector(fileContainer);
 
+	int resultIndex = fileCount - fileShifts;
+	while (resultIndex < 0) {
+		resultIndex += fileCount;
+	}
+	fileContainer[resultIndex]->open("fileNo" + std::to_string(resultIndex) + ".txt", std::ios_base::in);
+	
+	main.close();
+	main.open("copy" + fileName);
+	
+	for (int i = 0; i < minCount; ++i) {
+		main << ' ' << INT_MIN;
+	}
+	
+	int buf;
+	
+	(*fileContainer[resultIndex]) >> buf;
+	
+	while (buf!=INT_MIN && fileContainer[resultIndex]->good()) {
+		main << ' ' << buf;
+		(*fileContainer[resultIndex]) >> buf;
+	}
+	
+	fileContainer[resultIndex]->close();
+	
+	main.close();
+	
+	std::string temp = "copy" + fileName;
+	
+	std::rename(temp.c_str(), resultName.c_str());
+	
+	deleteFiles(fileCount);
+	
 	return true;
 }
 
