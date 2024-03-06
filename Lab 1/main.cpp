@@ -13,7 +13,7 @@ int main() {
 		sortFile(fileName, 5);
 		endClock = clock();
 		double time = (double)(endClock - startClock) / CLOCKS_PER_SEC;
-		std::cout << i << ". TIME: " << time << std::endl;
+		std::cout << i << ". TIME: " << time <<  " SORTED: " << isFileContainsSortedArray("result.txt") << std::endl;
 	}
 	return 0;
 }

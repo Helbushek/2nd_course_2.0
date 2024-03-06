@@ -12,18 +12,10 @@
 const int FILE_COUNT = 10;
 
 struct interConnect {
-	interConnect(void)
-		:fileCount{}
-		, fileName{}
-		, levelCount{}
-		, ip{}
-		, ms{}
-	{
-		return;
-	}
-	int fileCount;
+	interConnect(void) = default;
+	int fileCount = 0;
 	std::string fileName;
-	int levelCount;
+	int levelCount = 0;
 	std::vector<int> ip;
 	std::vector<int> ms;
 
@@ -37,7 +29,7 @@ bool createFilesArray(const int& filesCount, std::vector<std::fstream*>&);
 
 bool isFileContainsSortedArray(const std::string& fileName);
 
-int devideFile(const std::string& fileName, int& minCount);
+int divideFile(const std::string& fileName, int& minCount);
 
 int sumVector(std::vector<int> vector);
 
@@ -49,17 +41,9 @@ void startSetup(interConnect& base, std::fstream& main, std::vector<std::fstream
 
 void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*>& fileContainer);
 
-bool skipSeparator(std::vector<std::fstream*>& container);
-
 int findMin(std::vector<int>& result);
 
 bool hasNoNull(std::vector<int> vector);
-
-std::vector<int> readOnce(std::vector<std::fstream*>& container);
-
-void shiftRight(std::vector<std::fstream*>& vector);
-
-void shiftRight(std::vector<int>& vector);
 
 void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer);
 

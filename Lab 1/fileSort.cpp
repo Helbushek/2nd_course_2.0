@@ -79,17 +79,20 @@ bool isFileContainsSortedArray(const std::string& fileName)  {
 
 	int val1, val2;
 	fileStream >> val2;
-	while (!fileStream.eof()) {
+	while (fileStream.good()) { // if nothing left to read - it is trivial. In other cases false will be generated if error occures ,thus f2 is wrong. 
 		val1 = val2;
 		fileStream >> val2;
 		if (val1 > val2) 
 			return false;
 	}
+	if (fileStream.bad()) { // If error occured when readed, false will return. 
+		return false;
+	}
 	fileStream.close();
 	return true;
 }
 
-int devideFile(const std::string& fileName, int& minCount) {
+int divideFile(const std::string& fileName, int& minCount) {
 	std::fstream workingFile(fileName, std::ios_base::in);
 	std::fstream toCopy(std::string("copy" + fileName), std::ios_base::out);
 
@@ -198,17 +201,6 @@ void splitFile(interConnect& base, std::fstream& main, std::vector<std::fstream*
 	closeVector(fileContainer);
 }
 
-bool skipSeparator(std::vector<std::fstream*>& container) {
-	bool flag = true;
-	int temp;
-	for (int i = 0; i < container.size()-1; ++i) {
-		(*container[i]) >> temp;
-		if (temp != INT_MIN)
-			flag = false;
-	}
-	return flag;
-}
-
 int findMin(std::vector<int>& result) {
 	int min=INT_MAX, index = -1;
 	for (int i = 0; i < result.size(); ++i) {
@@ -221,32 +213,16 @@ int findMin(std::vector<int>& result) {
 }
 
 bool hasNoNull(std::vector<int> vector) {
-	bool flag = true;
 	for (int i = 0; i < vector.size(); ++i) {
 		if (vector[i] == 0) {
-			flag = false;
+			return false;
 		}
 	}
-	return flag;
+	return true;
 }
 
-std::vector<int> readOnce(std::vector<std::fstream*>& container) {
-	std::vector<int> result;
-	int temp = 0;
-	for (int i = 0; i < container.size(); ++i) {
-		(*container[i]) >> temp;
-		result.push_back(temp);
-	}
-	return result;
-}
-
-void shiftRight(std::vector<std::fstream*>& vector) {
-	for (int i = vector.size() - 1; i > 0; --i) {
-		std::swap(vector[i], vector[i - 1]);
-	}
-}
-
-void shiftRight(std::vector<int>& vector) {
+template<typename TL>
+void shiftRight(std::vector<TL>& vector) {
 	for (int i = vector.size() - 1; i > 0; --i) {
 		std::swap(vector[i], vector[i - 1]);
 	}
@@ -294,7 +270,6 @@ void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 				}
 			}
 
-			// FIXME: check what can be wrong here
 			int minIndex = findMin(temp);
  			while (minIndex != -1) { // fixed
 				(*fileContainer[index]) << temp[minIndex] << ' ';
@@ -311,7 +286,7 @@ void mergeFile(interConnect& base, std::vector<std::fstream*> fileContainer) {
 			}
 					}
 
-		// 8
+		
 
 		fileContainer[index]->close();
 		fileContainer[index - 1]->close();
@@ -355,7 +330,7 @@ bool sortFile(const std::string& fileName, int fileCount) {
 
 	// I. splitting phase 
 	int minCount;
-	int splitedParts = devideFile(fileName, minCount);
+	int splitedParts = divideFile(fileName, minCount);
 	
 	interConnect base{};
 	
