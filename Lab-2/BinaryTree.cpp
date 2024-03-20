@@ -16,7 +16,6 @@ BinaryTree::BinaryTree(Node* root) {
     clear();
     m_root = root;
     }
-
 }
 
 BinaryTree::~BinaryTree()
@@ -32,7 +31,7 @@ void BinaryTree::clear()
 
 void BinaryTree::clear(Node* root)
 {
-   if(!root) {
+   if(root==nullptr) {
        return;
    }
 
@@ -51,6 +50,13 @@ BinaryTree BinaryTree::clone(Node *root)
    BinaryTree tree;
    tree.m_root = _clone(root);
    return tree;
+}
+
+void BinaryTree::operator=(const BinaryTree &other) {
+   if (!isEmpty()) {
+       clear();
+   }
+   m_root = other.clone().m_root;
 }
 
 bool BinaryTree::isIdeal() const
@@ -223,33 +229,52 @@ int BinaryTree::min(Node* root) const {
 }
 
 BinaryTree BinaryTree::find(const int key) const {
-    return _find(key);
+    return _find(key, m_root);
 }
-BinaryTree::Node* BinaryTree::_find(const int key) const {
-    if (m_root->getRight()==nullptr && m_root->getLeft() == nullptr) {
+BinaryTree::Node* BinaryTree::_find(const int key, Node* root) const {
+    if (root==nullptr) {
         return nullptr;
     }
-    else if (m_root->getRight()!=nullptr && m_root->getRight()->getKey()==key) {
-        return m_root->getRight();
-    }
-    else if(m_root->getLeft()!=nullptr && m_root->getLeft()->getKey()==key) {
-        return m_root->getRight();
+    if (root->getKey()==key) {
+        return root;
     }
     else {
-        BinaryTree rightChild((m_root->getRight()));
-        BinaryTree leftChild((m_root->getLeft()));
-        if (rightChild._find(key)!=nullptr)
-            return rightChild._find(key);
-        else if (leftChild._find(key)!=nullptr)
-            return leftChild._find(key);
-        else {
-            return nullptr;
+        Node* searchRight = _find(key, root->getRight());
+        Node* searchLeft = _find(key, root->getLeft());
+        if (searchRight!=nullptr) {
+            return searchRight;
         }
+        else if (searchLeft!=nullptr) {
+            return searchLeft;
+        }
+        else
+            return nullptr;
     }
 }
 
 bool BinaryTree::remove(const int key) {
+    if (find(key).m_root!=nullptr) {
+        remove(find(key).m_root);
+        return true;
+    }
+    else
+        return false;
+}
 
+bool BinaryTree::remove(Node* root) {
+    if (root->getRight()!=nullptr) {
+        root->setKey(root->getRight()->getKey());
+        remove(root->getRight());
+        return true;
+    }
+    else if (root->getLeft()!=nullptr) {
+        root->setKey(root->getLeft()->getKey());
+        remove(root->getLeft());
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 BinaryTree::Node::Node(int key, Node* left, Node* right)
@@ -286,4 +311,8 @@ void BinaryTree::Node::setLeft(Node* left)
 void BinaryTree::Node::setRight(Node* right)
 {
     m_right = right;
+}
+
+BinaryTree::Node::operator BinaryTree() {
+    return BinaryTree(*this);
 }

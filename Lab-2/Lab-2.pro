@@ -10,13 +10,15 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    BinaryTree.cpp
+    BinaryTree.cpp \
+    treewidget.cpp
 
 HEADERS += \
-    BinaryTree.h
+    BinaryTree.h \
+    treewidget.h
 
 FORMS += \
-    binarytree.ui
+    treewidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

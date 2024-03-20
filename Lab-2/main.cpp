@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
         key = rand() % 50;
         temp.addNode(key);
     }
+    temp.remove(0);
     temp.printHorizontal();
-    std::cout << std::endl << "MIN: " << temp.min();
+    //std::cout << std::endl << "MIN: " << temp.min();
     return 0;
 }

@@ -13,8 +13,10 @@ public:
 
     void clear();
     static void clear(Node* root);
+
     BinaryTree clone() const;
     static BinaryTree clone(Node *root);
+    void operator=(const BinaryTree &other);
 
     bool isIdeal() const;
     bool isBalanced() const;
@@ -54,7 +56,9 @@ private:
     int max(Node*) const;
     int min(Node*) const;
 
-    Node* _find(const int key) const;
+    bool remove(Node* root);
+
+    Node* _find(const int key, Node*) const;
 private:
     Node *m_root = nullptr;
 };
@@ -72,6 +76,8 @@ public:
     Node* getRight() const;
     void setLeft(Node* left);
     void setRight(Node* right);
+
+    operator BinaryTree();
 
 private:
     int m_key = 0;
