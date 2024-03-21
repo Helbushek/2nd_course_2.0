@@ -2,6 +2,7 @@
 
 #include "TreeWidget.h"
 #include "ui_TreeWidget.h"
+#include "TreeNodeGraphicsItem.h"
 
 TreeWidget::TreeWidget(QWidget *parent) :
     QWidget(parent),
@@ -9,8 +10,12 @@ TreeWidget::TreeWidget(QWidget *parent) :
     m_scene(new QGraphicsScene(this))
 {
     ui->setupUi(this);
-    ui->graphicsView->setScene(m_scene);
-    m_scene->addRect(0, 0, 100, 100);
+	ui->graphicsView->setScene(m_scene);
+	auto item = new TreeNodeGraphicsItem("Some not so long\ntwo-line text");
+	item->setFontSize(16);
+	m_scene->addItem(item);
+
+
 }
 
 TreeWidget::~TreeWidget()

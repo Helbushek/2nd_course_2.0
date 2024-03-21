@@ -56,7 +56,7 @@ private:
     int max(Node*) const;
     int min(Node*) const;
 
-    bool remove(Node* root);
+    void remove(Node* root);
 
     Node* _find(const int key, Node*) const;
 private:

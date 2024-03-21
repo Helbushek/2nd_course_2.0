@@ -261,19 +261,20 @@ bool BinaryTree::remove(const int key) {
         return false;
 }
 
-bool BinaryTree::remove(Node* root) {
-    if (root->getRight()!=nullptr) {
+void BinaryTree::remove(Node* root) {
+    if (root->getRight() == nullptr && root->getLeft() == nullptr) {
+        delete root;
+        return;
+    }
+    else if (root->getRight()!=nullptr) {
         root->setKey(root->getRight()->getKey());
         remove(root->getRight());
-        return true;
+        return;
     }
     else if (root->getLeft()!=nullptr) {
         root->setKey(root->getLeft()->getKey());
         remove(root->getLeft());
-        return true;
-    }
-    else {
-        return false;
+        return;
     }
 }
 
