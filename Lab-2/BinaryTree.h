@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 class BinaryTree
 {
@@ -36,6 +37,7 @@ public:
     BinaryTree copyLeftChild() const;
 
     int height() const;
+    int height(int) const;
     int power() const;
 
     int max() const;
@@ -44,6 +46,10 @@ public:
     bool remove(const int key);
 
     BinaryTree find(const int key) const;
+
+    void printList() const;
+
+    operator std::vector<int>();
 private:
     BinaryTree(Node* root);
     Node *_addNode(Node *root, int key);
@@ -56,9 +62,17 @@ private:
     int max(Node*) const;
     int min(Node*) const;
 
-    void remove(Node* root);
+    bool remove(Node* root);
 
-    Node* _find(const int key, Node*) const;
+    Node *_find(const int key, Node *) const;
+
+    void _printList(Node *) const;
+
+    bool _isIdeal(Node *) const;
+    bool _isBalanced(Node *) const;
+
+    void vectorize(Node *root, std::vector<int>&) const;
+
 private:
     Node *m_root = nullptr;
 };

@@ -11,11 +11,9 @@ TreeWidget::TreeWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 	ui->graphicsView->setScene(m_scene);
-	auto item = new TreeNodeGraphicsItem("Some not so long\ntwo-line text");
+	auto item = new TreeNodeGraphicsItem("90wwww");
 	item->setFontSize(16);
 	m_scene->addItem(item);
-
-
 }
 
 TreeWidget::~TreeWidget()

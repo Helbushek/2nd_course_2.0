@@ -65,9 +65,13 @@ QRectF TreeNodeGraphicsItem::TreeNodeGraphicsItem::boundingRect() const
 void TreeNodeGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	QRectF rect	  = QGraphicsSimpleTextItem::boundingRect();
-	rect.moveTo((boundingRect().width() - rect.width()) / 2,
-						(boundingRect().height() - rect.height()) / 2);
-	painter->drawEllipse(boundingRect());
+	QRectF circleRect = boundingRect();
+	circleRect.setHeight(qMax(circleRect.height(), circleRect.width()));
+	circleRect.setWidth(circleRect.height());
+	rect.moveTo((circleRect.width() - rect.width()) / 2,
+				(circleRect.height() - rect.height()) / 2);
+
+	painter->drawEllipse(circleRect);
 	painter->setFont(font());
 	painter->drawText(rect, text());
 
