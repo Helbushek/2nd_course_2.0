@@ -55,24 +55,28 @@ void TreeNodeGraphicsItem::setFontSize(int size)
 QRectF TreeNodeGraphicsItem::TreeNodeGraphicsItem::boundingRect() const
 	{
 	QRectF rect	  = QGraphicsSimpleTextItem::boundingRect();
-	int oldWidth  = rect.width();
-	int oldHeight = rect.height();
-	rect.setWidth(oldWidth * sqrt(2));
-	rect.setHeight(oldHeight * sqrt(2));
+    int width  = rect.width()* sqrt(2);
+    int height = rect.height()* sqrt(2);
+    rect.setWidth(qMax(width, height));
+    rect.setHeight(qMax(width, height));
 	return rect;
 }
 
 void TreeNodeGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	QRectF rect	  = QGraphicsSimpleTextItem::boundingRect();
-	QRectF circleRect = boundingRect();
-	circleRect.setHeight(qMax(circleRect.height(), circleRect.width()));
-	circleRect.setWidth(circleRect.height());
-	rect.moveTo((circleRect.width() - rect.width()) / 2,
-				(circleRect.height() - rect.height()) / 2);
-
-	painter->drawEllipse(circleRect);
-	painter->setFont(font());
-	painter->drawText(rect, text());
-
+    QRectF textRect = QGraphicsSimpleTextItem::boundingRect();
+    textRect.moveTo((boundingRect().width() - textRect.width()) / 2, (boundingRect().height() - textRect.height()) / 2);
+    painter->setBrush(QBrush(m_fillColor));
+    painter->drawEllipse(boundingRect());
+    painter->translate(textRect.x(), textRect.y());
+    QGraphicsSimpleTextItem::paint(painter, option, widget);
 }
+
+//QPointF TreeNodeGraphicsItem::pos() const
+//{
+//    return QGraphicsSimpleTextItem::pos();
+//}
+//void TreeNodeGraphicsItem::setPos(qreal X, qreal Y)
+//{
+
+//}
