@@ -6,11 +6,14 @@ class TreeNodeGraphicsItem: public QGraphicsSimpleTextItem
 public:
 	TreeNodeGraphicsItem(const QString &text = "", QGraphicsItem *parent = nullptr);
 
-	int fontSize();
-	QColor textColor();
-	QColor borderColor();
-	QColor fillColor();
+    int fontSize();
+    QColor textColor();
+    QColor borderColor();
+    QColor fillColor();
 
+//    QPointF pos() const;
+
+//    void setPos(qreal X, qreal Y);
 	void setFontSize(int);
 	void setTextColor(QColor &);
 	void setBorderColor(QColor &);

@@ -47,6 +47,11 @@ void BinaryTree::clear(Node* root)
    delete root;
 }
 
+BinaryTree::Node* BinaryTree::root()
+{
+   return m_root;
+}
+
 BinaryTree BinaryTree::clone() const
 {
     return clone(m_root);
@@ -110,7 +115,7 @@ BinaryTree::Node *BinaryTree::_clone(Node *root)
        return cloneRoot;
     }
 
-    cloneRoot = new Node(root->getKey());
+    cloneRoot = new BinaryTree::Node(root->getKey());
     cloneRoot->setLeft(_clone(root->getLeft()));
     cloneRoot->setRight(_clone(root->getRight()));
 
@@ -383,21 +388,6 @@ BinaryTree::operator std::vector<int>()
     vectorize(m_root, temp);
     return temp;
 }
-void BinaryTree::print(TreeWidget *parent) const // TODO (Will be in Qt)
-{
-    print(m_root, 0, 400, 0, parent);
-}
-void BinaryTree::print(Node *root, int leftBorderPos, int rightBorderPos, int yPos, TreeWidget *parent) const // SAME TODO
-{
-   /* if (root == nullptr)
-    {
-        return;
-    }
-    int xPos = (leftBorderPos + rightBorderPos) / 2;
-    print(root->getLeft(), leftBorderPos, xPos, yPos + 15);
-    print(root->getRight(), xPos, rightBorderPos, yPos + 15);*/
-}
-
 
 // NODE ZONE BELOW \|\|\|
 

@@ -2,7 +2,6 @@
 #include <vector>
 #include <QWidget>
 
-#include "treewidget.h"
 class BinaryTree
 {
 public:
@@ -15,6 +14,8 @@ public:
     ~BinaryTree();
 
     int getKey();
+
+    Node* root();
 
     void clear();
     static void clear(Node* root);
@@ -30,9 +31,6 @@ public:
 
     void printHorizontal(int levelSpacing = 4) const;
     void printHorizontal(Node *root, int marginLeft, int levelSpacing) const;
-
-    void print(TreeWidget* parent=nullptr) const;
-    void print(Node *root, int leftBorderPos, int rightBorderPos, int yPos = 0, TreeWidget* parent=nullptr) const;
 
     static void clearLeftChild(Node *root = nullptr);
     static void clearRightChild(Node *root = nullptr);
@@ -101,8 +99,8 @@ public:
     operator BinaryTree();
 
 private:
-    int m_key = 0;
-    Node* m_left = nullptr;
-    Node* m_right = nullptr;
+    int m_key;
+    Node* m_left;
+    Node* m_right;
 
 };

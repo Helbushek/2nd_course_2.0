@@ -3,7 +3,7 @@
 #include <QApplication>
 #include <QDebug>
 
-#include "BinaryTree.h"
+#include "treewidget.h"
 
 int main(int argc, char *argv[])
 {   
