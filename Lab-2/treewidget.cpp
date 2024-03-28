@@ -1,19 +1,23 @@
 #include <QGraphicsScene>
-
-#include "TreeWidget.h"
 #include "ui_TreeWidget.h"
 #include "TreeNodeGraphicsItem.h"
+#include "BinaryTree.h"
 
-TreeWidget::TreeWidget(QWidget *parent) :
+TreeWidget::TreeWidget(QWidget *parent):
     QWidget(parent),
     ui(new Ui::TreeWidget),
     m_scene(new QGraphicsScene(this))
 {
     ui->setupUi(this);
-	ui->graphicsView->setScene(m_scene);
-	auto item = new TreeNodeGraphicsItem("90wwww");
-	item->setFontSize(16);
-	m_scene->addItem(item);
+    ui->graphicsView->setScene(m_scene);
+    BinaryTree temp;
+    for (int i = 0; i < 10; ++i)
+    {
+        temp.addNode(rand() % 50);
+    }
+    auto item = new TreeNodeGraphicsItem("9");
+    item->setFontSize(16);
+    m_scene->addItem(item);
 }
 
 TreeWidget::~TreeWidget()

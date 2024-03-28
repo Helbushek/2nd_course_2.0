@@ -4,6 +4,7 @@
 #include <QMath.h>
 
 #include "BinaryTree.h"
+#include "treewidget.h"
 
 BinaryTree::BinaryTree(const BinaryTree &other)
 {
@@ -22,6 +23,11 @@ BinaryTree::BinaryTree(Node* root) {
 BinaryTree::~BinaryTree()
 {
     clear();
+}
+
+int BinaryTree::getKey()
+{
+    return m_root->getKey();
 }
 
 void BinaryTree::clear()
@@ -377,6 +383,21 @@ BinaryTree::operator std::vector<int>()
     vectorize(m_root, temp);
     return temp;
 }
+void BinaryTree::print(TreeWidget *parent) const // TODO (Will be in Qt)
+{
+    print(m_root, 0, 400, 0, parent);
+}
+void BinaryTree::print(Node *root, int leftBorderPos, int rightBorderPos, int yPos, TreeWidget *parent) const // SAME TODO
+{
+   /* if (root == nullptr)
+    {
+        return;
+    }
+    int xPos = (leftBorderPos + rightBorderPos) / 2;
+    print(root->getLeft(), leftBorderPos, xPos, yPos + 15);
+    print(root->getRight(), xPos, rightBorderPos, yPos + 15);*/
+}
+
 
 // NODE ZONE BELOW \|\|\|
 

@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
+#include <QWidget>
 
+#include "treewidget.h"
 class BinaryTree
 {
 public:
@@ -11,6 +13,8 @@ public:
     BinaryTree(const BinaryTree &other);
 
     ~BinaryTree();
+
+    int getKey();
 
     void clear();
     static void clear(Node* root);
@@ -26,6 +30,9 @@ public:
 
     void printHorizontal(int levelSpacing = 4) const;
     void printHorizontal(Node *root, int marginLeft, int levelSpacing) const;
+
+    void print(TreeWidget* parent=nullptr) const;
+    void print(Node *root, int leftBorderPos, int rightBorderPos, int yPos = 0, TreeWidget* parent=nullptr) const;
 
     static void clearLeftChild(Node *root = nullptr);
     static void clearRightChild(Node *root = nullptr);
