@@ -67,7 +67,8 @@ private:
     int max(Node*) const;
     int min(Node*) const;
 
-    bool remove(Node* root);
+    bool remove(Node *root);
+    Node *detect(int key, Node*);
 
     Node *_find(const int key, Node *) const;
 
@@ -90,6 +91,8 @@ public:
 
     int getKey() const;
     void setKey(int key);
+
+    bool hasChilden();
 
     Node* getLeft() const;
     Node* getRight() const;
