@@ -33,6 +33,18 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLCDNumber" name="lcdNumber_2"/>
+     </item>
+     <item>
+      <widget class="QLCDNumber" name="lcdNumber">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QSpinBox" name="spinBox"/>
      </item>
      <item>

@@ -2,6 +2,8 @@
 #include <vector>
 #include <QWidget>
 
+class Node;
+
 class BinaryTree
 {
 public:
@@ -54,15 +56,15 @@ public:
 
     void printList() const;
 
-    operator std::vector<int>();
+    operator std::vector<int>() const;
 private:
-    BinaryTree(Node* root);
+    explicit BinaryTree(Node* root);
     Node *_addNode(Node *root, int key);
     Node *_clone() const;
     static Node *_clone(Node *root);
 
     int height(Node*) const;
-    int power(Node*) const;
+    int degree(Node*) const;
 
     int max(Node*) const;
     int min(Node*) const;
@@ -72,7 +74,7 @@ private:
 
     Node *_find(const int key, Node *) const;
 
-    void _printList(Node *) const;
+    void _nlrPrint(Node *) const;
 
     bool _isIdeal(Node *) const;
     bool _isBalanced(Node *) const;
@@ -83,27 +85,4 @@ private:
     Node *m_root = nullptr;
 };
 
-class BinaryTree::Node
-{
-public:
-    Node(int key = 0, Node* left = nullptr, Node* right = nullptr);
-    ~Node() = default;
 
-    int getKey() const;
-    void setKey(int key);
-
-    bool hasChilden();
-
-    Node* getLeft() const;
-    Node* getRight() const;
-    void setLeft(Node* left);
-    void setRight(Node* right);
-
-    operator BinaryTree();
-
-private:
-    int m_key;
-    Node* m_left;
-    Node* m_right;
-
-};
