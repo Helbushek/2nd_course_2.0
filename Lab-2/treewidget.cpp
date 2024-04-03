@@ -2,6 +2,7 @@
 #include "ui_TreeWidget.h"
 #include "TreeNodeGraphicsItem.h"
 #include "BinaryTree.h"
+#include "Node.h"
 #include "treewidget.h"
 
 TreeWidget::TreeWidget(QWidget *parent):
@@ -17,7 +18,6 @@ TreeWidget::TreeWidget(QWidget *parent):
 
     connect(ui->pushButtonRemove, &QPushButton::clicked, this, [this] { removeKey(ui->spinBox->value());
     });
-
 
 }
 
@@ -35,7 +35,21 @@ void TreeWidget::removeKey(int key)
 void TreeWidget::_redrawTree()
 {
     m_scene->clear();
+    updateHeight();
+    updatePower();
     _drawTree(m_tree->root(), 0, m_scene->width(), 0);
+}
+
+void TreeWidget::updateHeight()
+{
+    ui->lcdNumber->display(m_tree->height());
+    return;
+}
+
+void TreeWidget::updatePower()
+{
+    ui->lcdNumber_2->display(m_tree->power());
+    return;
 }
 
 QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rightBorderPos, int yPos)

@@ -4,56 +4,47 @@
 
 TreeNodeGraphicsItem::TreeNodeGraphicsItem(const QString &text, QGraphicsItem *parent)
 	: QGraphicsSimpleTextItem(text, parent)
-	{
-	}
+	{}
 
-int TreeNodeGraphicsItem::fontSize()
-	{
+int TreeNodeGraphicsItem::fontSize() {
 	return font().pointSize();
-	}
+}
 
-QColor TreeNodeGraphicsItem::textColor()
-	{
+QColor TreeNodeGraphicsItem::textColor() {
 	return m_textColor;
-	}
+}
 
-QColor TreeNodeGraphicsItem::borderColor()
-	{
-	return m_borderColor;
-	}
+QColor TreeNodeGraphicsItem::borderColor() {
+    return m_borderColor;
+}
 
-QColor TreeNodeGraphicsItem::fillColor()
-	{
-	return m_fillColor;
-	}
+QColor TreeNodeGraphicsItem::fillColor() {
+    return m_fillColor;
+}
 
-void TreeNodeGraphicsItem::setTextColor(QColor &color)
-	{
+void TreeNodeGraphicsItem::setTextColor(QColor &color)	{
 	m_textColor = color;
 	update();
-	}
+}
 
-void TreeNodeGraphicsItem::setBorderColor(QColor &color)
-	{
+void TreeNodeGraphicsItem::setBorderColor(QColor &color) {
 	m_borderColor = color;
-	update();
-	}
+    update();
+}
 
-void TreeNodeGraphicsItem::setFillColor(QColor &color)
-	{
-	m_textColor = color;
-	update();
-	}
+void TreeNodeGraphicsItem::setFillColor(QColor &color) {
+    m_textColor = color;
+    update();
+}
 
-void TreeNodeGraphicsItem::setFontSize(int size)
-	{
+void TreeNodeGraphicsItem::setFontSize(int size){
 	QFont font = this->font();
-	font.setPointSize(size);
-	this->setFont(font);
-	}
+    font.setPointSize(size);
+    this->setFont(font);
+}
 
-QRectF TreeNodeGraphicsItem::TreeNodeGraphicsItem::boundingRect() const
-	{
+QRectF TreeNodeGraphicsItem::TreeNodeGraphicsItem::boundingRect() const {
+
 	QRectF rect	  = QGraphicsSimpleTextItem::boundingRect();
     int width  = rect.width()* sqrt(2);
     int height = rect.height()* sqrt(2);
@@ -62,8 +53,8 @@ QRectF TreeNodeGraphicsItem::TreeNodeGraphicsItem::boundingRect() const
 	return rect;
 }
 
-void TreeNodeGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
+void TreeNodeGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
+
     QRectF textRect = QGraphicsSimpleTextItem::boundingRect();
     textRect.moveTo((boundingRect().width() - textRect.width()) / 2, (boundingRect().height() - textRect.height()) / 2);
     painter->setBrush(QBrush(m_fillColor));
@@ -71,12 +62,3 @@ void TreeNodeGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsIt
     painter->translate(textRect.x(), textRect.y());
     QGraphicsSimpleTextItem::paint(painter, option, widget);
 }
-
-//QPointF TreeNodeGraphicsItem::pos() const
-//{
-//    return QGraphicsSimpleTextItem::pos();
-//}
-//void TreeNodeGraphicsItem::setPos(qreal X, qreal Y)
-//{
-
-//}

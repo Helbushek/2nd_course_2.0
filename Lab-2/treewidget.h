@@ -20,6 +20,9 @@ public:
 
     void show();
 
+    void updateHeight();
+
+    void updatePower();
   public slots:
 
     void addKey(int key);
