@@ -33,6 +33,20 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButtonClear">
+       <property name="text">
+        <string>CLEAR</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonRand">
+       <property name="text">
+        <string>RAND</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLCDNumber" name="lcdNumber_2"/>
      </item>
      <item>

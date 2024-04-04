@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <QWidget>
 
 class Node;
 
@@ -17,7 +16,7 @@ public:
 
     int getKey();
 
-    Node* root();
+    Node* root() const;
 
     void clear();
     static void clear(Node* root);
@@ -29,7 +28,7 @@ public:
     bool isIdeal() const;
     bool isBalanced() const;
 
-    Node *addNode(int key);
+    Node *add(int key);
 
     void printHorizontal(int levelSpacing = 4) const;
     void printHorizontal(Node *root, int marginLeft, int levelSpacing) const;
@@ -39,13 +38,12 @@ public:
     static void clearChild(Node *root = nullptr);
 
     bool isEmpty() const;
-
     BinaryTree copyRightChild() const;
     BinaryTree copyLeftChild() const;
 
     int height() const;
     int height(int) const;
-    int power() const;
+    int size() const;
 
     int max() const;
     int min() const;
@@ -64,12 +62,12 @@ private:
     static Node *_clone(Node *root);
 
     int height(Node*) const;
-    int degree(Node*) const;
+    int size(Node*) const;
 
     int max(Node*) const;
     int min(Node*) const;
 
-    bool remove(Node *root);
+    bool remove(Node *root, int key);
     Node *detect(int key, Node*);
 
     Node *_find(const int key, Node *) const;
@@ -80,6 +78,8 @@ private:
     bool _isBalanced(Node *) const;
 
     void vectorize(Node *root, std::vector<int>&) const;
+
+    void bringUp(Node *root);
 
 private:
     Node *m_root = nullptr;

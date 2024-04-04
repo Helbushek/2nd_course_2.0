@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include <QGraphicsScene>
+
 #include "ui_TreeWidget.h"
 #include "TreeNodeGraphicsItem.h"
 #include "BinaryTree.h"
@@ -10,20 +12,27 @@ TreeWidget::TreeWidget(QWidget *parent):
     ui(new Ui::TreeWidget),
     m_scene(new QGraphicsScene(this))
 {
+    srand(time(0));
     ui->setupUi(this);
     ui->graphicsView->setScene(m_scene);
     m_tree = new BinaryTree();
-    connect(ui->pushBUttonAdd, &QPushButton::clicked, this, [this] { addKey(ui->spinBox->value());
-    });
 
-    connect(ui->pushButtonRemove, &QPushButton::clicked, this, [this] { removeKey(ui->spinBox->value());
-    });
+    connect(ui->pushBUttonAdd, &QPushButton::clicked, this, [this] { addKey(ui->spinBox->value()); });
+
+    connect(ui->pushButtonRemove, &QPushButton::clicked, this, [this] { removeKey(ui->spinBox->value()); });
+
+    connect(ui->pushButtonRand, &QPushButton::clicked, this, [this] { addKey(rand() % 50); });
+
+    connect(ui->pushButtonClear, &QPushButton::clicked, this, [this] {
+        m_tree->clear();
+        _redrawTree();
+     });
 
 }
 
 void TreeWidget::addKey(int key)
 {
-    m_tree->addNode(key);
+    m_tree->add(key);
     _redrawTree();
 }
 void TreeWidget::removeKey(int key)
@@ -48,7 +57,7 @@ void TreeWidget::updateHeight()
 
 void TreeWidget::updatePower()
 {
-    ui->lcdNumber_2->display(m_tree->power());
+    ui->lcdNumber_2->display(m_tree->size());
     return;
 }
 
@@ -60,15 +69,15 @@ QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rig
     }
 
     int xPos = (leftBorderPos + rightBorderPos) / 2;
-    TreeNodeGraphicsItem *item = new TreeNodeGraphicsItem(QString::number(root->getKey()));
+    TreeNodeGraphicsItem *item = new TreeNodeGraphicsItem(QString::number(root->key()));
     item->setFontSize(m_fontSize);
     m_scene->addItem(item);
     item->setPos(xPos - item->boundingRect().width() / 2, yPos);
 
     QPointF center = item->pos() + QPointF(item->boundingRect().center());
 
-    QPointF leftCenter = _drawTree(root->getLeft(), leftBorderPos, xPos, yPos + 100);
-    QPointF rightCenter = _drawTree(root->getRight(), xPos, rightBorderPos, yPos + 100);
+    QPointF leftCenter = _drawTree(root->left(), leftBorderPos, xPos, yPos + 100);
+    QPointF rightCenter = _drawTree(root->right(), xPos, rightBorderPos, yPos + 100);
 
     if (!leftCenter.isNull())
     {
