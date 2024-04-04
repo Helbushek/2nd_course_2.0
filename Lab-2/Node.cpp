@@ -8,7 +8,7 @@ BinaryTree::Node::Node(int key, Node* left, Node* right)
       , m_right(right)
 {}
 
-int BinaryTree::Node::getKey() const
+int BinaryTree::Node::key() const
 {
     return m_key;
 }
@@ -18,12 +18,12 @@ void BinaryTree::Node::setKey(int key)
     m_key = key;
 }
 
-BinaryTree::Node* BinaryTree::Node::getLeft() const
+BinaryTree::Node* BinaryTree::Node::left() const
 {
     return m_left;
 }
 
-BinaryTree::Node* BinaryTree::Node::getRight() const
+BinaryTree::Node* BinaryTree::Node::right() const
 {
     return m_right;
 }
@@ -44,5 +44,11 @@ BinaryTree::Node::operator BinaryTree() {
 
 bool BinaryTree::Node::hasChilden()
 {
-    return ((getRight() != nullptr) || (getLeft() != nullptr));
+    if (this == nullptr)
+    {
+        return false;
+    }
+    else {
+        return ((m_right != nullptr) || (m_left != nullptr));
+    }
 }

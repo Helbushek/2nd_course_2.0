@@ -7,13 +7,13 @@ class BinaryTree::Node
     Node(int key = 0, Node* left = nullptr, Node* right = nullptr);
     ~Node() = default;
 
-    int getKey() const;
+    int key() const;
     void setKey(int key);
 
     bool hasChilden();
 
-    Node* getLeft() const;
-    Node* getRight() const;
+    Node* left() const;
+    Node* right() const;
     void setLeft(Node* left);
     void setRight(Node* right);
 
