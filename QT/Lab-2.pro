@@ -9,18 +9,17 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    BinaryTreeTester.cpp \
-    Node.cpp \
+    ../Lab-2/BinaryTree.cpp \
+    ../Lab-2/Node.cpp \
+    ../Lab-3/SearchTree.cpp \
     TreeNodeGraphicsItem.cpp \
     main.cpp \
-    qt_main.cpp \
-    BinaryTree.cpp \
     treewidget.cpp
 
 HEADERS += \
-    BinaryTree.h \
-    BinaryTreeTester.h \
-    Node.h \
+    ../Lab-2/BinaryTree.h \
+    ../Lab-2/Node.h \
+    ../Lab-3/SearchTree.h \
     TreeNodeGraphicsItem.h \
     treewidget.h
 

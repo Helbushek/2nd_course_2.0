@@ -1,8 +1,6 @@
 #pragma once
 #include <vector>
 
-class Node;
-
 class BinaryTree
 {
 public:
@@ -12,7 +10,7 @@ public:
     BinaryTree() = default;
     BinaryTree(const BinaryTree &other);
 
-    ~BinaryTree();
+    virtual ~BinaryTree();
 
     int getKey();
 
@@ -28,7 +26,7 @@ public:
     bool isIdeal() const;
     bool isBalanced() const;
 
-    Node *add(int key);
+    virtual Node *add(int key);
 
     void printHorizontal(int levelSpacing = 4) const;
     void printHorizontal(Node *root, int marginLeft, int levelSpacing) const;
@@ -42,20 +40,21 @@ public:
     BinaryTree copyLeftChild() const;
 
     int height() const;
-    int height(int) const;
+    virtual int height(int) const;
     int size() const;
 
     int max() const;
     int min() const;
 
-    bool remove(const int key);
+    virtual bool remove(const int key);
 
-    BinaryTree find(const int key) const;
+    virtual Node* find(const int key) const;
 
     void printList() const;
 
-    operator std::vector<int>() const;
-private:
+    virtual operator std::vector<int>() const;
+
+protected:
     explicit BinaryTree(Node* root);
     Node *_addNode(Node *root, int key);
     Node *_clone() const;
@@ -81,7 +80,7 @@ private:
 
     void bringUp(Node *root);
 
-private:
+protected:
     Node *m_root = nullptr;
 };
 

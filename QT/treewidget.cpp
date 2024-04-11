@@ -3,8 +3,6 @@
 
 #include "ui_TreeWidget.h"
 #include "TreeNodeGraphicsItem.h"
-#include "BinaryTree.h"
-#include "Node.h"
 #include "treewidget.h"
 
 TreeWidget::TreeWidget(QWidget *parent):
@@ -21,12 +19,17 @@ TreeWidget::TreeWidget(QWidget *parent):
 
     connect(ui->pushButtonRemove, &QPushButton::clicked, this, [this] { removeKey(ui->spinBox->value()); });
 
+    connect(ui->pushButtonRemove, &QPushButton::clicked, this, [this] { findKey(ui->spinBox->value()); });
+
     connect(ui->pushButtonRand, &QPushButton::clicked, this, [this] { addKey(rand() % 50); });
 
     connect(ui->pushButtonClear, &QPushButton::clicked, this, [this] {
         m_tree->clear();
         _redrawTree();
-     });
+    });
+
+    connect(ui->typeComboBox, &QComboBox::currentTextChanged, this,
+            [this] { rebuildTree(ui->typeComboBox->currentIndex()); });
 
 }
 
@@ -40,6 +43,32 @@ void TreeWidget::removeKey(int key)
     m_tree->remove(key);
     _redrawTree();
 }
+void TreeWidget::findKey(int key)
+{
+    BinaryTree::Node* current = m_tree->find(key);
+    _redrawTree();
+}
+
+void TreeWidget::rebuildTree(int index)
+{
+    std::vector<int> temp(*m_tree);
+    delete m_tree;
+    if (index == 0)
+    {
+        m_tree = new BinaryTree();
+    }
+    if (index == 1)
+    {
+        m_tree = new SearchTree();
+    }
+
+
+    for (int i = 0; i < temp.size(); ++i)
+    {
+        m_tree->add(temp[i]);
+    }
+    _redrawTree();
+}
 
 void TreeWidget::_redrawTree()
 {
@@ -51,13 +80,13 @@ void TreeWidget::_redrawTree()
 
 void TreeWidget::updateHeight()
 {
-    ui->lcdNumber->display(m_tree->height());
+    ui->heightNumber->display(m_tree->height());
     return;
 }
 
 void TreeWidget::updatePower()
 {
-    ui->lcdNumber_2->display(m_tree->size());
+    ui->sizeNumber->display(m_tree->size());
     return;
 }
 
@@ -111,9 +140,8 @@ void TreeWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
     _updateSceneRect();
+    _redrawTree();
 }
-
-
 
 void TreeWidget::_updateSceneRect()
 {
