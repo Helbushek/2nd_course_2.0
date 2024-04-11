@@ -2,7 +2,9 @@
 
 #include <QWidget>
 
-#include "BinaryTree.h"
+#include "../Lab-2/BinaryTree.h"
+#include "../Lab-2/Node.h"
+#include "../Lab-3/SearchTree.h"
 
 class QGraphicsScene;
 
@@ -27,6 +29,8 @@ public:
 
     void addKey(int key);
     void removeKey(int key);
+    void findKey(int key);
+    void rebuildTree(int);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;

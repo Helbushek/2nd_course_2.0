@@ -219,7 +219,7 @@ void BinaryTreeTester::clear()
     }
     deallocateTree(tree);
     std::cout << "BinaryTreeTester::clear ended. Press any key to continue..." << std::endl;
-    //getchar();
+    getchar();
 }
 
 void BinaryTreeTester::check_clear(const BinaryTree *tree, const int size)

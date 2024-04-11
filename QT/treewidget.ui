@@ -33,6 +33,23 @@
       </spacer>
      </item>
      <item>
+      <widget class="QComboBox" name="typeComboBox">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+       <item>
+        <property name="text">
+         <string>BinaryTree</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>SearchTree</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButtonClear">
        <property name="text">
         <string>CLEAR</string>
@@ -47,10 +64,24 @@
       </widget>
      </item>
      <item>
-      <widget class="QLCDNumber" name="lcdNumber_2"/>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>SIZE:</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QLCDNumber" name="lcdNumber">
+      <widget class="QLCDNumber" name="sizeNumber"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>HEIGHT:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLCDNumber" name="heightNumber">
        <property name="font">
         <font>
          <pointsize>12</pointsize>
@@ -60,6 +91,13 @@
      </item>
      <item>
       <widget class="QSpinBox" name="spinBox"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>FIND</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushBUttonAdd">
