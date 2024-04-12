@@ -22,18 +22,18 @@ QColor TreeNodeGraphicsItem::fillColor() {
     return m_fillColor;
 }
 
-void TreeNodeGraphicsItem::setTextColor(QColor &color)	{
+void TreeNodeGraphicsItem::setTextColor(const QColor& color)	{
 	m_textColor = color;
 	update();
 }
 
-void TreeNodeGraphicsItem::setBorderColor(QColor &color) {
+void TreeNodeGraphicsItem::setBorderColor(const QColor& color) {
 	m_borderColor = color;
     update();
 }
 
-void TreeNodeGraphicsItem::setFillColor(QColor &color) {
-    m_textColor = color;
+void TreeNodeGraphicsItem::setFillColor(const QColor& color) {
+    m_fillColor = color;
     update();
 }
 
