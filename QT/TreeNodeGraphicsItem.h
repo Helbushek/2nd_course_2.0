@@ -15,9 +15,9 @@ public:
 
 //    void setPos(qreal X, qreal Y);
 	void setFontSize(int);
-	void setTextColor(QColor &);
-	void setBorderColor(QColor &);
-	void setFillColor(QColor &);
+    void setTextColor(const QColor &);
+    void setBorderColor(const QColor &);
+    void setFillColor(const QColor &);
 
 	QRectF boundingRect() const;
 
