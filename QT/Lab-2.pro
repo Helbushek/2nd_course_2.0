@@ -10,16 +10,20 @@ CONFIG += c++17
 
 SOURCES += \
     ../Lab-2/BinaryTree.cpp \
+    ../Lab-2/BinaryTreeTester.cpp \
     ../Lab-2/Node.cpp \
     ../Lab-3/SearchTree.cpp \
+    ../Lab-3/SearchTreeTester.cpp \
     TreeNodeGraphicsItem.cpp \
     main.cpp \
     treewidget.cpp
 
 HEADERS += \
     ../Lab-2/BinaryTree.h \
+    ../Lab-2/BinaryTreeTester.h \
     ../Lab-2/Node.h \
     ../Lab-3/SearchTree.h \
+    ../Lab-3/SearchTreeTester.h \
     TreeNodeGraphicsItem.h \
     treewidget.h
 
