@@ -7,33 +7,27 @@ public:
 	SearchTree() = default;
 	SearchTree(const SearchTree&);
 
-	virtual ~SearchTree() {}
+	~SearchTree() {}
 
 	SearchTree clone(Node* root);
 
-	void operator=(const SearchTree&);
+	SearchTree operator=(const SearchTree&);
 
 	int max() const;
 	int min() const;
 
-    virtual Node* add(int key);
+    Node* find(const int key) const;
 
-    virtual Node* find(const int key) const;
+    bool remove(const int key);
 
-    virtual bool remove(const int key);
+    int height(int) const;
 
-    virtual int height(int) const;
-
-    virtual operator std::vector<int>() const;
-
-private: 
-	Node* _addNode(Node*, int);
-
-	void _remove(Node*, int);
+private:
+	Node* _addNode(Node* root, int key) override;
 
 	Node* _find(Node*, int) const;
 
 	int bringUp(Node*, const bool);
 
-	void vectorize(Node* root, std::vector<int>&) const;
+	void vectorize(Node* root, std::vector<int>&) const override;
 };

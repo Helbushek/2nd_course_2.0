@@ -129,13 +129,14 @@ void BinaryTreeTester::addAndCount()
     }
     BinaryTree *tree = allocateTree();
     check_addAndCount(tree, 0);
+    m_keys.clear();
     m_keys = generateKeys();
     for (int i = 0 ; i < m_maxSize; ++i) {
         tree->add(m_keys[i]);
         check_addAndCount(tree, i+1);
-        if (m_useConsoleOutput) {
-            tree->printHorizontal();
-        }
+    }
+    if (m_useConsoleOutput) {
+        tree->printHorizontal();
     }
     
     deallocateTree(tree);
@@ -161,7 +162,7 @@ void BinaryTreeTester::destructor()
         }
 		deallocateTree(tree);
     }
-    std::cout << "BinaryTreeTester::destructor ended. Press any key to continue..." << std::endl;
+    std::cout << "TreeTester::destructor ended. Press any key to continue..." << std::endl;
     getchar();
 	
 }
@@ -185,27 +186,28 @@ void BinaryTreeTester::remove()
         return;
     }
 
-    std::vector<int> nodeKeys;
-
     BinaryTree* tree = allocateTree();
-    check_remove(tree, invalidKey(), false, nodeKeys.size());
+    m_keys.clear();
+    check_remove(tree, invalidKey(), false, m_keys.size());
     
+    m_keys.clear();
     m_keys = generateKeys();
     for (int i = 0; i < m_maxSize; ++i) {
         tree->add(m_keys[i]);
-        nodeKeys.push_back(m_keys[i]);
+        
         check_addAndCount(tree, i + 1);
     }
     if (m_useConsoleOutput) {
         tree->printHorizontal();
     }
 
-    while (!nodeKeys.empty()) {
-        int removedNodeIndex = rand() % nodeKeys.size();
+    while (!m_keys.empty()) {
+        
+        int removedNodeIndex = rand() % m_keys.size();
 
-        check_remove(tree, invalidKey(), false, nodeKeys.size());
-        check_remove(tree, nodeKeys[removedNodeIndex], true, nodeKeys.size() - 1);
-        nodeKeys.erase(nodeKeys.begin() + removedNodeIndex);
+        check_remove(tree, invalidKey(), false, m_keys.size());
+        check_remove(tree, m_keys[removedNodeIndex], true, m_keys.size() - 1);
+        m_keys.erase(m_keys.begin() + removedNodeIndex);
 
         if (m_useConsoleOutput) {
             tree->printHorizontal();
@@ -214,9 +216,12 @@ void BinaryTreeTester::remove()
 
     if (m_useConsoleOutput) {
         tree->printHorizontal();
+
     }
 
-    check_remove(tree, invalidKey(), false, nodeKeys.size());
+    
+
+    check_remove(tree, invalidKey(), false, m_keys.size());
 	deallocateTree(tree);
 }
 

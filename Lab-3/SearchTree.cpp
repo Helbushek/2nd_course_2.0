@@ -5,9 +5,10 @@ SearchTree::SearchTree(const SearchTree& other)
     : BinaryTree(other)
 {}
 
-void SearchTree::operator = (const SearchTree& other)
+SearchTree SearchTree::operator = (const SearchTree& other)
 {
 	BinaryTree::operator=(other);
+	return *this;
 }
 
 SearchTree SearchTree::clone(BinaryTree::Node* root) {
@@ -17,6 +18,9 @@ SearchTree SearchTree::clone(BinaryTree::Node* root) {
 }
 
 int SearchTree::max() const {
+	if (m_root == nullptr) {
+
+	}
 	Node* current = m_root;
 	while (current->right()!=nullptr) {
 		current = current->right();
@@ -31,28 +35,15 @@ int SearchTree::min() const {
 	return current->key();
 }
 
-BinaryTree::Node* SearchTree::add(int key) {
-	if (m_root) {
-		return _addNode(m_root, key);
-	}
-	else {
-		return m_root = new Node(key);
-	}
-}
-
 BinaryTree::Node* SearchTree::_addNode(Node* root, int key) {
-
 	if (!root) {
 		root = new Node(key);
 	}
-	else if (key>root->key()) {
+	else if (key > root->key()) {
 		root->setRight(_addNode(root->right(), key));
 	}
-	else if (key<root->key()) {
+	else if (key < root->key()) {
 		root->setLeft(_addNode(root->left(), key));
-	}
-	else {
-		return nullptr;
 	}
 
 	return root;
@@ -73,14 +64,14 @@ BinaryTree::Node* SearchTree::find(const int key) const {
 			continue;
 		}
 	}
-	return current;
+	return nullptr;
 }
 
-BinaryTree::Node* SearchTree::_find(Node* root ,const int key) const {
+BinaryTree::Node* SearchTree::_find(Node* root, const int key) const {
 	if (root == nullptr)
 		return nullptr;
 
-	if  (
+	if (
 		(root->right() != nullptr && root->right()->key() == key) ||
 		(root->left() != nullptr && root->left()->key() == key)
 		)
@@ -104,8 +95,13 @@ bool SearchTree::remove(const int key) {
 		return false;
 	}
 	if (remove->hasChilden()) {
-		_remove(remove, key);
-		
+		if (remove->left() != nullptr) {
+			remove->setKey(bringUp(remove->left(), false));
+		}
+		else if (remove->right() != nullptr) {
+			remove->setKey(bringUp(remove->right(), true));
+		}
+
 	}
 	else if (!remove->hasChilden()) {
 		if (remove == m_root) {
@@ -122,15 +118,6 @@ bool SearchTree::remove(const int key) {
 		}
 	}
 	return true;
-}
-
-void SearchTree::_remove(Node* root, int key) {
-	if (root->left() != nullptr) {
-		root->setKey(bringUp(root->left(), false));
-	}
-	else if (root->right() != nullptr) {
-		root->setKey(bringUp(root->right(), true));
-	}
 }
 
 int SearchTree::bringUp(Node* root, const bool state) {
@@ -174,12 +161,6 @@ int SearchTree::height(int key) const {
 		return -1;
 	}
 	return height;
-}
-
-SearchTree::operator std::vector<int>() const {
-	std::vector<int> result;
-	vectorize(m_root, result);
-	return result;
 }
 
 void SearchTree::vectorize(Node* root, std::vector<int>& result) const {

@@ -4,8 +4,8 @@
 #include "SearchTreeTester.h"
 
 int main() {
-	SearchTreeTester test(true, true);
+	SearchTreeTester test(false, true);
 	
-	test.test(100);
+	test.test(1000);
 	return 0;
 }
