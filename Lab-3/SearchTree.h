@@ -11,7 +11,7 @@ public:
 
 	SearchTree clone(Node* root);
 
-	SearchTree operator=(const SearchTree&);
+	SearchTree& operator=(const SearchTree&);
 
 	int max() const;
 	int min() const;
@@ -25,7 +25,7 @@ public:
 private:
 	Node* _addNode(Node* root, int key) override;
 
-	Node* _find(Node*, int) const;
+	Node* _findParent(Node*, int) const;
 
 	int bringUp(Node*, const bool);
 

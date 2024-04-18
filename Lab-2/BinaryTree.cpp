@@ -64,15 +64,16 @@ BinaryTree BinaryTree::clone(Node *root)
    return tree;
 }
 
-void BinaryTree::operator=(const BinaryTree &other) {
+BinaryTree& BinaryTree::operator=(const BinaryTree &other) {
    if (other.m_root == this->m_root)
    {
-       return;
+       return *this;
    }
    if (!isEmpty()) {
        clear();
    }
    m_root = _clone(other.m_root);
+   return *this;
 }
 
 bool BinaryTree::isIdeal() const
@@ -278,9 +279,9 @@ int BinaryTree::min(Node* root) const {
 
 BinaryTree::Node* BinaryTree::find(const int key) const
 {
-    return _find(key, m_root);
+    return _findParent(key, m_root);
 }
-BinaryTree::Node* BinaryTree::_find(const int key, Node* root) const {
+BinaryTree::Node* BinaryTree::_findParent(const int key, Node* root) const {
     if (root==nullptr) {
         return nullptr;
     }
@@ -289,10 +290,10 @@ BinaryTree::Node* BinaryTree::_find(const int key, Node* root) const {
     }
     else
     {
-        Node *node = _find(key, root->right());
+        Node *node = _findParent(key, root->right());
         if (node == nullptr)
         {
-            node = _find(key, root->left());
+            node = _findParent(key, root->left());
         }
         return node;
     }

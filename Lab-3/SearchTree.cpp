@@ -5,7 +5,7 @@ SearchTree::SearchTree(const SearchTree& other)
     : BinaryTree(other)
 {}
 
-SearchTree SearchTree::operator = (const SearchTree& other)
+SearchTree& SearchTree::operator = (const SearchTree& other)
 {
 	BinaryTree::operator=(other);
 	return *this;
@@ -67,7 +67,7 @@ BinaryTree::Node* SearchTree::find(const int key) const {
 	return nullptr;
 }
 
-BinaryTree::Node* SearchTree::_find(Node* root, const int key) const {
+BinaryTree::Node* SearchTree::_findParent(Node* root, const int key) const {
 	if (root == nullptr)
 		return nullptr;
 
@@ -80,10 +80,10 @@ BinaryTree::Node* SearchTree::_find(Node* root, const int key) const {
 	}
 	else {
 		if (key > root->key() && root->right() != nullptr) {
-			root = _find(root->right(), key);
+			root = _findParent(root->right(), key);
 		}
 		else if (key < root->key() && root->left() != nullptr) {
-			root = _find(root->left(), key);
+			root = _findParent(root->left(), key);
 		}
 		return root;
 	}
@@ -109,7 +109,7 @@ bool SearchTree::remove(const int key) {
 			m_root = nullptr;
 			return true;
 		}
-		Node* preRemove = _find(m_root, key);
+		Node* preRemove = _findParent(m_root, key);
 		if (preRemove->right() == remove) {
 			preRemove->setRight(nullptr);
 		}

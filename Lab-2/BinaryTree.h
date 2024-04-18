@@ -21,12 +21,12 @@ public:
 
     BinaryTree clone() const;
     static BinaryTree clone(Node *root);
-    void operator=(const BinaryTree &other);
+    BinaryTree& operator=(const BinaryTree &other);
 
     bool isIdeal() const;
     bool isBalanced() const;
 
-    virtual Node *add(int key);
+    Node *add(int key);
 
     void printHorizontal(int levelSpacing = 4) const;
     void printHorizontal(Node *root, int marginLeft, int levelSpacing) const;
@@ -69,7 +69,7 @@ protected:
     bool _remove(Node *root, int key);
     Node *detect(int key, Node*);
 
-    Node *_find(const int key, Node *) const;
+    Node *_findParent(const int key, Node *) const;
 
     void _nlrPrint(Node *) const;
 
