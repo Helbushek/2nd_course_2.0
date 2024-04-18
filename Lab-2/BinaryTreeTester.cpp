@@ -56,6 +56,11 @@ bool BinaryTreeTester::heightCheckEnabled() const
     return m_heightCheckEnabled;
 }
 
+void BinaryTreeTester::setUseConsoleOutput(const bool enabled)
+{
+    m_useConsoleOutput = enabled;
+}
+
 void BinaryTreeTester::setAddAndCountCheckEnabled(const bool enabled)
 {
     m_addAndCountCheckEnabled = enabled;
@@ -101,20 +106,38 @@ void BinaryTreeTester::deallocateTree(BinaryTree *tree)
     delete tree;
 }
 
+std::vector<int> BinaryTreeTester::generateKeys() {
+    std::vector<int> ordered;
+    for (int i = 0; i < m_maxSize; ++i) {
+        ordered.push_back(i + 1);
+    }
+
+    std::vector<int> random;
+    while (!ordered.empty()) {
+        int i = rand() % ordered.size();
+        random.push_back(ordered[i]);
+        ordered.erase(ordered.begin() + i);
+    }
+
+    return random;
+}
+
 void BinaryTreeTester::addAndCount()
 {
     if (!m_addAndCountCheckEnabled) {
         return;
     }
-
     BinaryTree *tree = allocateTree();
     check_addAndCount(tree, 0);
-    
+    m_keys = generateKeys();
     for (int i = 0 ; i < m_maxSize; ++i) {
-        tree->add(i);
-        check_addAndCount(tree, i + 1);
+        tree->add(m_keys[i]);
+        check_addAndCount(tree, i+1);
+        if (m_useConsoleOutput) {
+            tree->printHorizontal();
+        }
     }
-
+    
     deallocateTree(tree);
 }
 
@@ -167,9 +190,11 @@ void BinaryTreeTester::remove()
     BinaryTree* tree = allocateTree();
     check_remove(tree, invalidKey(), false, nodeKeys.size());
     
-    for (int i = 0 ; i < m_maxSize; ++i) {
-        nodeKeys.push_back(i);
-        tree->add(i);
+    m_keys = generateKeys();
+    for (int i = 0; i < m_maxSize; ++i) {
+        tree->add(m_keys[i]);
+        nodeKeys.push_back(m_keys[i]);
+        check_addAndCount(tree, i + 1);
     }
     if (m_useConsoleOutput) {
         tree->printHorizontal();

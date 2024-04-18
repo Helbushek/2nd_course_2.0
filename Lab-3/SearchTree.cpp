@@ -108,6 +108,11 @@ bool SearchTree::remove(const int key) {
 		
 	}
 	else if (!remove->hasChilden()) {
+		if (remove == m_root) {
+			delete m_root;
+			m_root = nullptr;
+			return true;
+		}
 		Node* preRemove = _find(m_root, key);
 		if (preRemove->right() == remove) {
 			preRemove->setRight(nullptr);
@@ -168,6 +173,7 @@ int SearchTree::height(int key) const {
 	if (current == nullptr) {
 		return -1;
 	}
+	return height;
 }
 
 SearchTree::operator std::vector<int>() const {
