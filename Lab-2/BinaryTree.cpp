@@ -355,7 +355,7 @@ bool BinaryTree::remove(const int key)
     Node *sub_founded = detect(key, m_root);
     if (sub_founded != nullptr)
     {
-        remove(sub_founded, key);
+        _remove(sub_founded, key);
         return true;
     }
     else return false;
@@ -381,7 +381,7 @@ BinaryTree::Node* BinaryTree::detect(int key, Node* root) {
     }
 }
 
-bool BinaryTree::remove(Node* root, int key) {
+bool BinaryTree::_remove(Node* root, int key) {
     if (root == nullptr)
     {
         return true;

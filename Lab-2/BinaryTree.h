@@ -56,7 +56,7 @@ public:
 
 protected:
     explicit BinaryTree(Node* root);
-    Node *_addNode(Node *root, int key);
+    virtual Node *_addNode(Node *root, int key);
     Node *_clone() const;
     static Node *_clone(Node *root);
 
@@ -66,7 +66,7 @@ protected:
     int max(Node*) const;
     int min(Node*) const;
 
-    bool remove(Node *root, int key);
+    bool _remove(Node *root, int key);
     Node *detect(int key, Node*);
 
     Node *_find(const int key, Node *) const;
@@ -76,7 +76,7 @@ protected:
     bool _isIdeal(Node *) const;
     bool _isBalanced(Node *) const;
 
-    void vectorize(Node *root, std::vector<int>&) const;
+    virtual void vectorize(Node *root, std::vector<int>&) const;
 
     void bringUp(Node *root);
 
