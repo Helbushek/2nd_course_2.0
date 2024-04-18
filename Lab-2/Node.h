@@ -17,11 +17,8 @@ class BinaryTree::Node
     void setLeft(Node* left);
     void setRight(Node* right);
 
-    operator BinaryTree();
-
   private:
     int m_key;
     Node* m_left;
     Node* m_right;
-
 };

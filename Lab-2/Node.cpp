@@ -38,10 +38,6 @@ void BinaryTree::Node::setRight(Node* right)
     m_right = right;
 }
 
-BinaryTree::Node::operator BinaryTree() {
-    return BinaryTree(*this);
-}
-
 bool BinaryTree::Node::hasChilden()
 {
     if (this == nullptr)

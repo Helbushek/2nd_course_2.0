@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов\BinaryTree">
+      <UniqueIdentifier>{6385811b-b600-4755-b7dc-bf6334660c02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\BinaryTree">
+      <UniqueIdentifier>{6b816867-11ba-49fd-bd6d-259292aa32aa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchTree.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchTreeTester.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lab-2\BinaryTree.cpp">
+      <Filter>Файлы ресурсов\BinaryTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lab-2\BinaryTreeTester.cpp">
+      <Filter>Файлы ресурсов\BinaryTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lab-2\Node.cpp">
+      <Filter>Файлы ресурсов\BinaryTree</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SearchTreeTester.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="SearchTree.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lab-2\BinaryTree.h">
+      <Filter>Файлы заголовков\BinaryTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lab-2\BinaryTreeTester.h">
+      <Filter>Файлы заголовков\BinaryTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lab-2\Node.h">
+      <Filter>Файлы заголовков\BinaryTree</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,8 +1,6 @@
 #pragma once
 #include <vector>
 
-class Node;
-
 class BinaryTree
 {
 public:
@@ -12,7 +10,7 @@ public:
     BinaryTree() = default;
     BinaryTree(const BinaryTree &other);
 
-    ~BinaryTree();
+    virtual ~BinaryTree();
 
     int getKey();
 
@@ -23,7 +21,7 @@ public:
 
     BinaryTree clone() const;
     static BinaryTree clone(Node *root);
-    void operator=(const BinaryTree &other);
+    BinaryTree& operator=(const BinaryTree &other);
 
     bool isIdeal() const;
     bool isBalanced() const;
@@ -42,22 +40,23 @@ public:
     BinaryTree copyLeftChild() const;
 
     int height() const;
-    int height(int) const;
+    virtual int height(int) const;
     int size() const;
 
     int max() const;
     int min() const;
 
-    bool remove(const int key);
+    virtual bool remove(const int key);
 
-    BinaryTree find(const int key) const;
+    virtual Node* find(const int key) const;
 
     void printList() const;
 
-    operator std::vector<int>() const;
-private:
+    virtual operator std::vector<int>() const;
+
+protected:
     explicit BinaryTree(Node* root);
-    Node *_addNode(Node *root, int key);
+    virtual Node *_addNode(Node *root, int key);
     Node *_clone() const;
     static Node *_clone(Node *root);
 
@@ -67,21 +66,21 @@ private:
     int max(Node*) const;
     int min(Node*) const;
 
-    bool remove(Node *root, int key);
+    bool _remove(Node *root, int key);
     Node *detect(int key, Node*);
 
-    Node *_find(const int key, Node *) const;
+    Node *_findParent(const int key, Node *) const;
 
     void _nlrPrint(Node *) const;
 
     bool _isIdeal(Node *) const;
     bool _isBalanced(Node *) const;
 
-    void vectorize(Node *root, std::vector<int>&) const;
+    virtual void vectorize(Node *root, std::vector<int>&) const;
 
     void bringUp(Node *root);
 
-private:
+protected:
     Node *m_root = nullptr;
 };
 

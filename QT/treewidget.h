@@ -2,7 +2,9 @@
 
 #include <QWidget>
 
-#include "BinaryTree.h"
+#include "../Lab-2/BinaryTree.h"
+#include "../Lab-2/Node.h"
+#include "../Lab-3/SearchTree.h"
 
 class QGraphicsScene;
 
@@ -27,6 +29,10 @@ public:
 
     void addKey(int key);
     void removeKey(int key);
+    void findKey(int key);
+    void rebuildTree(int);
+    void changeFontSize(int);
+    void addRandKey();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -36,7 +42,10 @@ protected:
     void _redrawTree();
     void _updateSceneRect();
 
-private:
+  private:
+    int m_foundNumber = 0;
+    std::vector<int> m_alt_tree;
+    BinaryTree::Node* foundNode = nullptr;
     int m_fontSize = 42;
     Ui::TreeWidget *ui;
     QGraphicsScene *m_scene = nullptr;
