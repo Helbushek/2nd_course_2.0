@@ -223,7 +223,18 @@ int BinaryTree::height(Node* root) {
     {
         return 0;
     }
-    return std::max(height(root->right()), height(root->left()))+1;
+    if (root->right() && !root->left()) {
+        return height(root->right())+1;
+    }
+    if (root->left() && !root->right()) {
+        return height(root->left())+1;
+    }
+    if (!root->right() && !root->left()) {
+        return 1;
+    }
+    if (root->right() && root->left()) {
+        return std::max(height(root->right()), height(root->left())) + 1;
+    }
 }
 
 int BinaryTree::size() const {

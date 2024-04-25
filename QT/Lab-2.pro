@@ -14,6 +14,8 @@ SOURCES += \
     ../Lab-2/Node.cpp \
     ../Lab-3/SearchTree.cpp \
     ../Lab-3/SearchTreeTester.cpp \
+    ../Lab-4/BalancedTree.cpp \
+    ../Lab-4/BalancedTreeTester.cpp \
     TreeNodeGraphicsItem.cpp \
     main.cpp \
     treewidget.cpp
@@ -24,6 +26,8 @@ HEADERS += \
     ../Lab-2/Node.h \
     ../Lab-3/SearchTree.h \
     ../Lab-3/SearchTreeTester.h \
+    ../Lab-4/BalancedTree.h \
+    ../Lab-4/BalancedTreeTester.h \
     TreeNodeGraphicsItem.h \
     treewidget.h
 

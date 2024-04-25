@@ -19,8 +19,7 @@ public:
 	
 
 private:
-	Node* _addNode(Node* root, int key) override;
-	Node* _addBalanceNode(Node* root, int key, bool& isFixed);
+    Node* _addNode(Node* root, int key) override;
 	int balance(Node* root) const;
 	void _balance(std::vector<Node*>& pass);
 
