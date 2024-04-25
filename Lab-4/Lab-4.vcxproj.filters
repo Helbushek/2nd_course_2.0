@@ -42,6 +42,15 @@
     <ClCompile Include="BalancedTree.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
+    <ClCompile Include="BalancedTreeTester.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lab-3\SearchTreeTester.cpp">
+      <Filter>Файлы ресурсов\ST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lab-2\BinaryTreeTester.cpp">
+      <Filter>Файлы ресурсов\BT</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BalancedTree.h">
@@ -55,6 +64,15 @@
     </ClInclude>
     <ClInclude Include="..\Lab-3\SearchTree.h">
       <Filter>Файлы заголовков\ST</Filter>
+    </ClInclude>
+    <ClInclude Include="BalancedTreeTester.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lab-3\SearchTreeTester.h">
+      <Filter>Файлы заголовков\ST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lab-2\BinaryTreeTester.h">
+      <Filter>Файлы заголовков\BT</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

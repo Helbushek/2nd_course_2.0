@@ -15,9 +15,11 @@ class BalancedTreeTester: public SearchTreeTester
     void check_assign(const BinaryTree* first,
                       const BinaryTree* second) override;
 
+    void check_balance(const BinaryTree*);
+
     void assign() override;
   private:
-    bool isSearchTree(const BinaryTree* tree);
+    bool isBalancedTree(const BinaryTree* tree);
     void treeKeysLnr(BinaryTree::Node* root, std::vector<int>& result);
 };
 

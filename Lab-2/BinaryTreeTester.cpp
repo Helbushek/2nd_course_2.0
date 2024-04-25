@@ -24,6 +24,8 @@ void BinaryTreeTester::test(const int size)
     clear();
     assign();
     height();
+
+    std::cout << "\n !!! Tree passed all tests, congrats! \n";
 }
 
 bool BinaryTreeTester::addAndCountCheckEnabled() const
@@ -140,6 +142,8 @@ void BinaryTreeTester::addAndCount()
     }
     
     deallocateTree(tree);
+    std::cout << "TreeTester::add and count ended. Press any key to continue..." << std::endl;
+    getchar();
 }
 
 void BinaryTreeTester::check_addAndCount(const BinaryTree *tree, const int size)
@@ -152,13 +156,15 @@ void BinaryTreeTester::destructor()
     if (!m_destructorCheckEnabled) {
         return;
     }
-
     const int runsCount = 200;
 	for (int i = 0; i < runsCount; i++)
     {
         BinaryTree* tree = allocateTree();
         for (int i = 0 ; i < m_maxSize; ++i) {
             tree->add(i);
+        }
+        if (m_useConsoleOutput) {
+            tree->printHorizontal();
         }
 		deallocateTree(tree);
     }
@@ -223,6 +229,8 @@ void BinaryTreeTester::remove()
 
     check_remove(tree, invalidKey(), false, m_keys.size());
 	deallocateTree(tree);
+    std::cout << "TreeTester::remove ended. Press any key to continue..." << std::endl;
+    getchar();
 }
 
 void BinaryTreeTester::check_remove(BinaryTree *tree, const int key,
@@ -244,11 +252,14 @@ void BinaryTreeTester::clear()
         for (int i = 0 ; i < m_maxSize; ++i) {
             tree->add(i);
         }
+        if (m_useConsoleOutput) {
+            tree->printHorizontal();
+        }
 		tree->clear();
 		check_clear(tree, 0);
     }
     deallocateTree(tree);
-    std::cout << "BinaryTreeTester::clear ended. Press any key to continue..." << std::endl;
+    std::cout << "TreeTester::clear ended. Press any key to continue..." << std::endl;
     getchar();
 }
 
@@ -284,6 +295,9 @@ void BinaryTreeTester::assign()
 
     tree3 = tree2; //Присваивание дерева большего размера
     check_assign(&tree2, &tree3);
+
+    std::cout << "TreeTester::assign ended. Press any key to continue..." << std::endl;
+    getchar();
 }
 
 void BinaryTreeTester::check_assign(const BinaryTree *first,
@@ -331,6 +345,8 @@ void BinaryTreeTester::height()
     height_longOnlyRightSubtree();
     height_longOnlyLeftAndRightSubtrees();
     height_longRandomZigzagSubtrees();
+    std::cout << "TreeTester::height ended. Press any key to continue..." << std::endl;
+    getchar();
 }
 
 void BinaryTreeTester::check_height(const BinaryTree &tree, const int height)
@@ -342,8 +358,13 @@ void BinaryTreeTester::height_trivialCases()
 {
     BinaryTree tree;
     check_height(tree, 0);
+    
     tree.add(0);
     check_height(tree, 1);
+    if (m_useConsoleOutput) {
+        tree.printHorizontal();
+    }
+
 }
 
 void BinaryTreeTester::height_longOnlyLeftSubtree()
@@ -356,6 +377,9 @@ void BinaryTreeTester::height_longOnlyLeftSubtree()
         runner = runner->left();
         check_height(longTree, i + 1);
     }
+    if (m_useConsoleOutput) {
+        longTree.printHorizontal();
+    }
 }
 
 void BinaryTreeTester::height_longOnlyRightSubtree()
@@ -367,6 +391,9 @@ void BinaryTreeTester::height_longOnlyRightSubtree()
         runner->setRight(new BinaryTree::Node(i));
         runner = runner->right();
         check_height(longTree, i + 1);
+    }
+    if (m_useConsoleOutput) {
+        longTree.printHorizontal();
     }
 }
 
@@ -384,6 +411,9 @@ void BinaryTreeTester::height_longOnlyLeftAndRightSubtrees()
         rightRunner->setRight(new BinaryTree::Node(i));
         rightRunner = rightRunner->right();
         check_height(longTree, i + 1);
+    }
+    if (m_useConsoleOutput) {
+        longTree.printHorizontal();
     }
 }
 
@@ -423,5 +453,8 @@ void BinaryTreeTester::height_longRandomZigzagSubtrees()
             rightRunner = rightRunner->right();
         }
         check_height(longTree, i + 1);
+    }
+    if (m_useConsoleOutput) {
+        longTree.printHorizontal();
     }
 }

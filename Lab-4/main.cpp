@@ -2,17 +2,11 @@
 #include <iostream>
 
 #include "BalancedTree.h"
+#include "BalancedTreeTester.h"
 
 int main() {
-	BalancedTree temp;
-	for (int i = 0; i < 10; ++i) {
-		temp.add(rand()%100);
-	}
-	temp.printHorizontal();
+	BalancedTreeTester temp(false, true);
 
-	temp.remove(34);
-	temp.remove(0);
-
-	temp.printHorizontal();
+	temp.test(500);
 	return 0;
 }

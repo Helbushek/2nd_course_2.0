@@ -59,9 +59,10 @@ void BalancedTree::_remove(Node* remove, std::vector<Node*>& pass) {
 	Node* parent = _findParent(m_root, remove->key());
 	
 	if (!remove->hasChilden()) {
-		if (!parent) {
+		if (!parent || parent == remove) {
 			delete m_root;
 			m_root = nullptr;
+			pass.clear();
 		}
 		else if (parent->right() == remove) {
 			delete remove;

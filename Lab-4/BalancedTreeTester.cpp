@@ -8,7 +8,7 @@ BalancedTreeTester::BalancedTreeTester(const bool useConsoleOutput, const bool e
 {}
 
 BinaryTree* BalancedTreeTester::allocateTree() {
-    return new SearchTree;
+    return new BalancedTree;
 }
 void BalancedTreeTester::check_addAndCount(const BinaryTree* tree, const int size) {
     assert(tree->size() == size);
@@ -17,6 +17,7 @@ void BalancedTreeTester::check_remove(BinaryTree* tree, const int key,
                                     const bool result, const int size) {
     assert(tree->remove(key) == result);
     assert(tree->size() == size);
+    assert(isBalancedTree(tree));
 }
 void BalancedTreeTester::check_clear(const BinaryTree* tree, const int size)
 {
@@ -53,29 +54,36 @@ void BalancedTreeTester::assign() {
     BalancedTree tree2 = tree1; //����������� �����������
     check_assign(&tree1, &tree2);
 
+    check_balance(&tree1);
+    check_balance(&tree2);
     tree1 = tree1; //������������ ������ ����
     check_assign(&tree1, &tree2); //���������, ��� tree1 �� ���������
 
     tree1 = tree2; //������������ ���������� �� ������� ��������
     check_assign(&tree1, &tree2);
+    check_balance(&tree1);
+    check_balance(&tree2);
 
     BalancedTree tree3;
     tree1 = tree3; //������������ ������ �������� �������
     check_assign(&tree1, &tree3);
+    check_balance(&tree3);
 
     tree3 = tree2; //������������ ������ �������� �������
     check_assign(&tree2, &tree3);
+    check_balance(&tree2);
 }
 
-bool BalancedTreeTester::isSearchTree(const BinaryTree* tree) {
+bool BalancedTreeTester::isBalancedTree(const BinaryTree* tree) {
 
     std::vector<int> nodes;
     treeKeysLnr(tree->root(), nodes);
-    for (int i = 0; i < nodes.size()-1; ++i) {
+    for (int i = 0; i < static_cast<int>(nodes.size()) - 1; ++i) {
         if (nodes[i] > nodes[i + 1]) {
             return false;
         }
     }
+    check_balance(tree);
     return true;
 }
 
@@ -85,4 +93,8 @@ void BalancedTreeTester::treeKeysLnr(BinaryTree::Node* root, std::vector<int>& r
         result.push_back(root->key());
         treeKeysLnr(root->right(), result);
     }
+}
+
+void BalancedTreeTester::check_balance(const BinaryTree* tree) {
+    assert(tree->isBalanced());
 }
