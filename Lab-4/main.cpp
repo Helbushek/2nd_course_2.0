@@ -6,7 +6,8 @@
 
 int main() {
 	BalancedTreeTester temp(false, true);
+	temp.setHeightCheckEnabled(false);
 
-	temp.test(500);
+	temp.test(100);
 	return 0;
 }

@@ -142,7 +142,7 @@ void BinaryTreeTester::addAndCount()
     }
     
     deallocateTree(tree);
-    std::cout << "TreeTester::add and count ended. Press any key to continue..." << std::endl;
+    std::cout << "TreeTester::add and count ended. Press any key to continue...";
     getchar();
 }
 
@@ -168,23 +168,10 @@ void BinaryTreeTester::destructor()
         }
 		deallocateTree(tree);
     }
-    std::cout << "TreeTester::destructor ended. Press any key to continue..." << std::endl;
+    std::cout << "TreeTester::destructor ended. Press any key to continue...";
     getchar();
 	
 }
-
-/*
- * [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
- * removedNodeIndex = 3
- * nodeKeys[removedNodeIndex] = 3
- *
- * [0, 1, 2, 4, 5, 6, 7, 8, 9]
- * removedNodeIndex = 4
- * nodeKeys[removedNodeIndex] = 5
- *
- * [0, 1, 2, 4, 6, 7, 8, 9]
- *
- */
 
 void BinaryTreeTester::remove()
 {
@@ -229,7 +216,7 @@ void BinaryTreeTester::remove()
 
     check_remove(tree, invalidKey(), false, m_keys.size());
 	deallocateTree(tree);
-    std::cout << "TreeTester::remove ended. Press any key to continue..." << std::endl;
+    std::cout << "TreeTester::remove ended. Press any key to continue...";
     getchar();
 }
 
@@ -259,7 +246,7 @@ void BinaryTreeTester::clear()
 		check_clear(tree, 0);
     }
     deallocateTree(tree);
-    std::cout << "TreeTester::clear ended. Press any key to continue..." << std::endl;
+    std::cout << "TreeTester::clear ended. Press any key to continue...";
     getchar();
 }
 
@@ -296,7 +283,7 @@ void BinaryTreeTester::assign()
     tree3 = tree2; //Присваивание дерева большего размера
     check_assign(&tree2, &tree3);
 
-    std::cout << "TreeTester::assign ended. Press any key to continue..." << std::endl;
+    std::cout << "TreeTester::assign ended. Press any key to continue...";
     getchar();
 }
 
@@ -345,7 +332,7 @@ void BinaryTreeTester::height()
     height_longOnlyRightSubtree();
     height_longOnlyLeftAndRightSubtrees();
     height_longRandomZigzagSubtrees();
-    std::cout << "TreeTester::height ended. Press any key to continue..." << std::endl;
+    std::cout << "TreeTester::height ended. Press any key to continue...";
     getchar();
 }
 
