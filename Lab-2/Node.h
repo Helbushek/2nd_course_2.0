@@ -17,6 +17,9 @@ class BinaryTree::Node
     void setLeft(Node* left);
     void setRight(Node* right);
 
+    int height();
+    int balance();
+
   private:
     int m_key;
     Node* m_left;

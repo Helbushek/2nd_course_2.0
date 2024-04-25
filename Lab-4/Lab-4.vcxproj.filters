@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков\BT">
+      <UniqueIdentifier>{39b57524-fbb9-4274-9802-883ea3717f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\ST">
+      <UniqueIdentifier>{9583e704-d2c3-44b9-9020-1612971ebbf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\BT">
+      <UniqueIdentifier>{67f2db09-79a2-4b79-9917-34264821ad80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\ST">
+      <UniqueIdentifier>{0d86f244-8727-423a-9cb8-dabc40affcaa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lab-2\Node.cpp">
+      <Filter>Файлы ресурсов\BT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lab-2\BinaryTree.cpp">
+      <Filter>Файлы ресурсов\BT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lab-3\SearchTree.cpp">
+      <Filter>Файлы ресурсов\ST</Filter>
+    </ClCompile>
+    <ClCompile Include="BalancedTree.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BalancedTree.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lab-2\BinaryTree.h">
+      <Filter>Файлы заголовков\BT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lab-2\Node.h">
+      <Filter>Файлы заголовков\BT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lab-3\SearchTree.h">
+      <Filter>Файлы заголовков\ST</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

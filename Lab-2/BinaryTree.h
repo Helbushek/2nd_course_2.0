@@ -60,7 +60,7 @@ protected:
     Node *_clone() const;
     static Node *_clone(Node *root);
 
-    int height(Node*) const;
+    static int height(Node*);
     int size(Node*) const;
 
     int max(Node*) const;

@@ -117,6 +117,7 @@ bool SearchTree::remove(const int key) {
 			preRemove->setLeft(nullptr);
 		}
 	}
+
 	return true;
 }
 

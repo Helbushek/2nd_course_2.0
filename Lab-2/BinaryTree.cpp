@@ -218,7 +218,7 @@ int BinaryTree::height(int key) const
     return height(temp.m_root);
 }
 
-int BinaryTree::height(Node* root) const {
+int BinaryTree::height(Node* root) {
     if (root == nullptr)
     {
         return 0;
