@@ -45,6 +45,27 @@ void BalancedTreeTester::assign() {
     check_balance(&tree2);
 }
 
+void BalancedTreeTester::check_addAndCount(const BinaryTree* tree, const int size) {
+    SearchTreeTester::check_addAndCount(tree, size);
+    assert(isBalancedTree(tree));
+}
+
+void BalancedTreeTester::check_remove(BinaryTree* tree, const int key, const bool result, const int size) {
+    SearchTreeTester::check_remove(tree, key, result, size);
+    assert(isBalancedTree(tree));
+}
+
+void BalancedTreeTester::check_clear(const BinaryTree* tree, const int size) {
+    SearchTreeTester::check_clear(tree, size);
+    assert(isBalancedTree(tree));
+}
+
+void BalancedTreeTester::check_assign(const BinaryTree* first, const BinaryTree* second) {
+    SearchTreeTester::check_assign(first, second);
+    assert(isBalancedTree(first));
+    assert(isBalancedTree(second));
+}
+
 bool BalancedTreeTester::isBalancedTree(const BinaryTree* tree) {
 
     assert(SearchTreeTester::isSearchTree(tree));

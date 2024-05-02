@@ -5,9 +5,10 @@
 #include "BalancedTreeTester.h"
 
 int main() {
+	SearchTreeTester temp1(false, true);
 	BalancedTreeTester temp(false, true);
-	temp.setHeightCheckEnabled(false);
-
-	temp.test(100);
+	
+	temp1.test(1000);
+	temp.test(1000);
 	return 0;
 }

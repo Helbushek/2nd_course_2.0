@@ -9,6 +9,13 @@ class BalancedTreeTester: public SearchTreeTester
 
     BinaryTree* allocateTree() override;
 
+    void check_addAndCount(const BinaryTree* tree, const int size) override;
+    void check_remove(BinaryTree* tree, const int key,
+        const bool result, const int size) override;
+    void check_clear(const BinaryTree* tree, const int size) override;
+    void check_assign(const BinaryTree* first,
+        const BinaryTree* second) override;
+
     void check_balance(const BinaryTree*);
 
     void assign() override;
