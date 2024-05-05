@@ -53,7 +53,21 @@ int BinaryTree::Node::height() {
     return BinaryTree::height(this);
 }
 
-int BinaryTree::Node::balance() {
+int BinaryTree::Node::balance() const {
+    if (this) {
+        return m_balance;
+    }
+    else {
+        return 0;
+    }
+}
+void BinaryTree::Node::setBalance(int key) {
+    if (this) {
+        m_balance = key;
+    }
+}
+
+int BinaryTree::Node::_balance() {
 	if (this == nullptr) {
 		return 0;
 	}

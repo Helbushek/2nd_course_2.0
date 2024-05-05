@@ -6,7 +6,7 @@ public:
 	BalancedTree();
 	BalancedTree(const BalancedTree& other);
 
-	int balance(int key=0) const;
+	int balance();
 
 	~BalancedTree() = default;
 
@@ -19,6 +19,8 @@ public:
 	
 
 private:
+    bool isFixed = false;
+
     Node* _addNode(Node* root, int key) override;
 	int balance(Node* root) const;
 	void _balance(std::vector<Node*>& pass);

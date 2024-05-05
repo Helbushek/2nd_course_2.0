@@ -147,8 +147,7 @@ QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rig
     }
 
     int xPos = (leftBorderPos + rightBorderPos) / 2;
-    TreeNodeGraphicsItem *item = new TreeNodeGraphicsItem(QString::number(root->key()));
-
+    TreeNodeGraphicsItem *item = new TreeNodeGraphicsItem(QString::number(root->key()) + " " + QString::number((root->balance())));
 
     item->setFontSize(m_fontSize);
 

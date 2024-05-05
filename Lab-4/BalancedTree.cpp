@@ -63,21 +63,24 @@ void BalancedTree::_remove(Node* remove, std::vector<Node*>& pass) {
 			delete m_root;
 			m_root = nullptr;
 			pass.clear();
+            m_root->setBalance(0);
 		}
 		else if (parent->right() == remove) {
 			delete remove;
 			parent->setRight(nullptr);
 			pass.pop_back();
+            parent->setBalance(parent->balance() - 1);
 		}
 		else if (parent->left() == remove) {
 			delete remove;
 			parent->setLeft(nullptr);
 			pass.pop_back();
+            parent->setBalance(parent->balance() + 1);
 		}
 	}
 	else {
-		int temp;
-		if ((remove->right() && !remove->left()) || remove->left() && remove->right()) {
+        int temp;
+        if ((remove->right() && !remove->left()) || (remove->left() && remove->right())) {
 			Node* current = remove->right();
 			pass.push_back(current);
 			while (current->left()) {
@@ -87,6 +90,7 @@ void BalancedTree::_remove(Node* remove, std::vector<Node*>& pass) {
 			temp = current->key();
 			_remove(current, pass);
 			remove->setKey(temp);
+			
 			
 		}
 		else if (remove->left() && !remove->right()) {
@@ -101,130 +105,118 @@ void BalancedTree::_remove(Node* remove, std::vector<Node*>& pass) {
 			remove->setKey(temp);
 			
 		}
-		/*else if (remove->left() && remove->right()) {
-			Node* current = remove->left();
-			pass.push_back(remove->left());
-			while (current->right()) {
-				pass.push_back(current->right());
-				current = current->right();
-			}
-			remove->setKey(current->key());
-			_remove(current, pass);
-		}*/
 	}
 	
 }
 
 void BalancedTree::_balance(std::vector<Node*> &pass) {
-	Node* current;
-	bool isFixed = false;
-	while (!pass.empty()) {
-		current = pass.back();
-		pass.pop_back();
+    Node* current = nullptr;
+	isFixed = false;
 
-		while (1) {
-			if (current->balance() == 0) {
-				break;
-			}
-			if (current->balance() == -1 || current->balance() == 1) {
-				isFixed = true;
-				break;
-			}
-			if (current->balance() == -2) {
-				if (current->left()->balance() < 1) {
-					shiftRight(current);
-					continue;
-				}
-				else {
-					shiftLeftRight(current);
-					continue;
-				}
-			}
-			if (current->balance() == 2) {
-				if (current->right()->balance() > -1) {
-					shiftLeft(current);
-					continue;
-				}
-				else {
-					shiftRightLeft(current);
-					continue;
-				}
-			}
-		}
+    while (!pass.empty() && !isFixed) {
+        if (current)
+        {
+            if (pass.back()->right() == current)
+            {
+                pass.back()->setBalance(pass.back()->balance() - 1);
+            }
+            else
+            {
+                pass.back()->setBalance(pass.back()->balance() + 1);
+            }
+        }
+        current = pass.back();
+        pass.pop_back();
+
+        if (current->balance() == -2) {
+            if (current->left()->balance() < 1) {
+                shiftRight(current);
+            }
+            else {
+                shiftLeftRight(current);
+            }
+        } else if (current->balance() == 2) {
+            if (current->right()->balance() > -1) {
+                shiftLeft(current);
+            }
+            else {
+                shiftRightLeft(current);
+            }
+        }
+
+        if (current->balance() == -1 || current->balance() == 1) {
+            isFixed = true;
+        }
 	}
 }
 
 SearchTree::Node* BalancedTree::_addNode(Node* root, int key) {
     if (!root) {
+        isFixed = false;
         root = new Node(key);
+        return root;
     }
     else if (key > root->key()) {
         root->setRight(_addNode(root->right(), key));
+        if (!isFixed)
+        {
+            root->setBalance(root->balance() + 1);
+        }
     }
     else if (key < root->key()) {
         root->setLeft(_addNode(root->left(), key));
-    }
-
-    while (1) {
-        if (root->balance() == 0) {
-            return root;
-        };
-        if (root->balance() == -1 || root->balance() == 1) {
-            return root;
-        }
-        if (root->balance() == -2) {
-            if (root->left()->balance() < 1) {
-                shiftRight(root);
-
-            }
-            else {
-                shiftLeftRight(root);
-            }
-            continue;
-        }
-        if (root->balance() == 2) {
-            if (root->right()->balance() > -1) {
-                shiftLeft(root);
-            }
-            else {
-                shiftRightLeft(root);
-            }
-            continue;
+        if (!isFixed)
+        {
+            root->setBalance(root->balance() - 1);
         }
     }
+
+    if (isFixed)
+    {
+        return root;
+    }
+
+    if (root->balance() == -2) {
+        if (root->left()->balance() < 1) {
+            shiftRight(root);
+
+        }
+        else {
+            shiftLeftRight(root);
+        }
+    } else if (root->balance() == 2) {
+        if (root->right()->balance() > -1) {
+            shiftLeft(root);
+        }
+        else {
+            shiftRightLeft(root);
+        }
+    }
+
+    if (root->balance() == 0) {
+        isFixed = true;
+    }
+    return root;
 }
 
-int BalancedTree::balance(int key) const {
-	return balance(find(key));
+int BalancedTree::balance() {
+	return balance(m_root);
 }
 
-int BalancedTree::balance(Node* root) const{
-	if (m_root == nullptr) {
-		return 0;
+int BalancedTree::balance(Node* root) const
+{
+	root->setBalance(root->_balance());
+	if (root) {
+		balance(root->left());
+		balance(root->right());
 	}
-	if (root == nullptr) {
-		return balance(m_root);
-	}
-	if (root->right() == nullptr) {
-		if (root->left() != nullptr) {
-			return -root->left()->height();
-		}
-		else
-			return 0;
-	}
-	else {
-		if (root->left() == nullptr) {
-			return root->right()->height();
-		}
-		else {
-			return (root->right()->height() - root->left()->height());
-		}
-	}
+	return root->balance();
 }
 
 void BalancedTree::shiftRight(Node* root) {
 	Node* bot;
 	bot = root->left();
+
 	if (bot) {
 		root->setLeft(bot->left());
 		bot->setLeft(bot->right());
@@ -234,11 +226,16 @@ void BalancedTree::shiftRight(Node* root) {
 		int temp = bot->key();
 		bot->setKey(root->key());
 		root->setKey(temp);
-	}
+    }
+
+	balance(root);
+
 }
 void BalancedTree::shiftLeft(Node* root) {
 	Node* bot;
 	bot = root->right();
+
+
 	if (bot) {
 		root->setRight(bot->right());
 		bot->setRight(bot->left());
@@ -249,6 +246,10 @@ void BalancedTree::shiftLeft(Node* root) {
 		bot->setKey(root->key());
 		root->setKey(temp);
 	}
+
+	balance(root);
+
+
 }
 
 void BalancedTree::shiftLeftRight(Node* root) {

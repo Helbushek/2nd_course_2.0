@@ -12,16 +12,21 @@ class BinaryTree::Node
 
     bool hasChilden();
 
+    int balance() const;
+    int _balance();
+    void setBalance(int);
+
     Node* left() const;
     Node* right() const;
     void setLeft(Node* left);
     void setRight(Node* right);
 
     int height();
-    int balance();
+    //int balance();
 
   private:
     int m_key;
     Node* m_left;
     Node* m_right;
+    int m_balance = 0;
 };
