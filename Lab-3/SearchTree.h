@@ -22,8 +22,8 @@ public:
 
     int height(int) const;
 
-private:
-	Node* _addNode(Node* root, int key) override;
+protected:
+    virtual Node* _addNode(Node* root, int key) override;
 
 	Node* _findParent(Node*, int) const;
 

@@ -17,7 +17,7 @@ public:
                       const BinaryTree* second) override;
 
     void assign() override;
-private:
+protected:
     bool isSearchTree(const BinaryTree* tree);
     void treeKeysLnr(BinaryTree::Node* root, std::vector<int>& result);
 };
