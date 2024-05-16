@@ -32,22 +32,7 @@ void HuffmanTree::decode(const std::string& fileName) {
 
 HuffmanTree::Node* HuffmanTree::_decode(std::fstream& file, Node* root, std::vector<bool>& route) {
 
-	if (root->left() == nullptr && root->right() == nullptr) {
-		for (auto i = route.begin(); i != route.end(); ++i) {
-			file << *i << ' ';
-		}
-		file << "| " << charFromBool(root->get()) << "\n";
-		route.pop_back();
-		return root;
-	}
-	if (root->left() != nullptr) {
-		route.push_back(false);
-		_encode(file, root->left(), route);
-	}
-	if (root->right() != nullptr) {
-		route.push_back(true);
-		_encode(file, root->right(), route);
-	}
+	
 }
 
 
