@@ -11,16 +11,18 @@ BinaryTree* SearchTreeTester::allocateTree() {
     return new SearchTree;
 }
 void SearchTreeTester::check_addAndCount(const BinaryTree* tree, const int size) {
-    assert(tree->size() == size);
+    BinaryTreeTester::check_addAndCount(tree, size);
+    assert(isSearchTree(tree));
 }
-void SearchTreeTester::check_remove(BinaryTree* tree, const int key,
-    const bool result, const int size) {
-    assert(tree->remove(key) == result);
-    assert(tree->size() == size);
+
+void SearchTreeTester::check_remove(BinaryTree* tree, const int key, const bool result, const int size) {
+    BinaryTreeTester::check_remove(tree, key, result, size);
+    assert(isSearchTree(tree));
 }
 void SearchTreeTester::check_clear(const BinaryTree* tree, const int size) 
 {
-    assert(tree->size() == size);
+    BinaryTreeTester::check_clear(tree, size);
+    assert(isSearchTree(tree));
 }
 
 
@@ -71,7 +73,7 @@ bool SearchTreeTester::isSearchTree(const BinaryTree* tree) {
     
     std::vector<int> nodes;
     treeKeysLnr(tree->root(), nodes);
-    for (int i = 0; i < nodes.size()-1; ++i) {
+    for (int i = 0; i < static_cast<int>(nodes.size()) - 1; ++i) {
         if (nodes[i] > nodes[i + 1]) {
             return false;
         }

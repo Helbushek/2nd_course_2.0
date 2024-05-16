@@ -99,13 +99,15 @@ bool BinaryTree::_isIdeal(Node *root) const
 
 bool BinaryTree::_isBalanced(Node *root) const
 {
-   if (root == nullptr || (!root->right() && !root->left()))
-       return true;
-   if (abs(height(root->left()) - height(root->right())) <= 1 && (_isBalanced(root->left()) && _isBalanced(root->right())))
-   {
-       return true;
-   }
-   return false;
+    if (root == nullptr) {
+        return true;
+    }
+    else if (root->balance() >= -1 && root->balance() <= 1) {
+        return _isBalanced(root->left()) && _isBalanced(root->right());
+    }
+    else {
+        return false;
+    }
 }
 
 BinaryTree::Node *BinaryTree::_clone() const
@@ -152,6 +154,7 @@ BinaryTree::Node *BinaryTree::_addNode(Node *root, int key)
 void BinaryTree::printHorizontal(int levelSpacing) const
 {
     printHorizontal(m_root, 0, levelSpacing);
+    std::cout << "\n =========================================\n";
 }
 
 void BinaryTree::printHorizontal(Node *root, int marginLeft, int levelSpacing) const
@@ -163,6 +166,7 @@ void BinaryTree::printHorizontal(Node *root, int marginLeft, int levelSpacing) c
     printHorizontal(root->right(), marginLeft + levelSpacing, levelSpacing);
     std::cout << std::string(marginLeft, ' ') << root->key() << std::endl;
     printHorizontal(root->left(), marginLeft + levelSpacing, levelSpacing);
+
 }
 
 void BinaryTree::clearLeftChild(Node *root){
@@ -218,12 +222,23 @@ int BinaryTree::height(int key) const
     return height(temp.m_root);
 }
 
-int BinaryTree::height(Node* root) const {
+int BinaryTree::height(Node* root) {
     if (root == nullptr)
     {
         return 0;
     }
-    return std::max(height(root->right()), height(root->left()))+1;
+    if (root->right() && !root->left()) {
+        return height(root->right())+1;
+    }
+    if (root->left() && !root->right()) {
+        return height(root->left())+1;
+    }
+    if (!root->right() && !root->left()) {
+        return 1;
+    }
+    if (root->right() && root->left()) {
+        return std::max(height(root->right()), height(root->left())) + 1;
+    }
 }
 
 int BinaryTree::size() const {

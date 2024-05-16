@@ -47,6 +47,7 @@ TreeWidget::TreeWidget(QWidget *parent):
 void TreeWidget::addKey(int key)
 {
     m_tree->add(key);
+    m_alt_tree.push_back(key);
     _redrawTree();
 }
 void TreeWidget::addRandKey()
@@ -60,6 +61,7 @@ void TreeWidget::addRandKey()
     {
         int key = rand() % (ui->spinBox->maximum() - ui->spinBox->minimum() + 1) + ui->spinBox->minimum();
         m_tree->add(key);
+        m_alt_tree.push_back(key);
     }
     _redrawTree();
 }
@@ -95,6 +97,10 @@ void TreeWidget::rebuildTree(int index)
     if (index == 1)
     {
         m_tree = new SearchTree();
+    }
+    if (index == 2)
+    {
+        m_tree = new BalancedTree();
     }
 
 
@@ -141,8 +147,7 @@ QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rig
     }
 
     int xPos = (leftBorderPos + rightBorderPos) / 2;
-    TreeNodeGraphicsItem *item = new TreeNodeGraphicsItem(QString::number(root->key()));
-
+    TreeNodeGraphicsItem *item = new TreeNodeGraphicsItem(QString::number(root->key()) + " " + QString::number((root->balance())));
 
     item->setFontSize(m_fontSize);
 

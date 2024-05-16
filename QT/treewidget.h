@@ -5,6 +5,7 @@
 #include "../Lab-2/BinaryTree.h"
 #include "../Lab-2/Node.h"
 #include "../Lab-3/SearchTree.h"
+#include "../Lab-4/BalancedTree.h"
 
 class QGraphicsScene;
 
