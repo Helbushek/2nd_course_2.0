@@ -3,7 +3,8 @@
 HuffmanTree::Node::Node() {
 	m_right = nullptr;
 	m_left = nullptr;
-	m_code = BoolVector();
+	m_body.code = BoolVector(256, false);
+	m_body.repeat = 0;
 }
 
 HuffmanTree::Node::~Node() {
@@ -11,24 +12,19 @@ HuffmanTree::Node::~Node() {
 	delete m_left;
 }
 
-HuffmanTree::Node::Node(const std::string& text) {
-	m_right = nullptr;
-	m_left = nullptr;
-	m_code = BoolVector(text.c_str());
-}
-
 HuffmanTree::Node::Node(const char* text) {
 	m_right = nullptr;
 	m_left = nullptr;
-	m_code = BoolVector(text);
+	m_body.code = BoolVector();
+	m_body.repeat = 0;
 }
 
-BoolVector HuffmanTree::Node::get() const {
-	return m_code;
+HuffmanTree::symbol HuffmanTree::Node::get() const {
+	return m_body;
 }
 
-void HuffmanTree::Node::set(const BoolVector& code) {
-	m_code = code;
+void HuffmanTree::Node::set(symbol body) {
+	m_body = body;
 }
 
 void HuffmanTree::Node::setLeft(Node* root) {

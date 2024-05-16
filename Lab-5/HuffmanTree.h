@@ -12,16 +12,23 @@ class HuffmanTree {
 public:
 	class Node;
 	HuffmanTree();
-	~HuffmanTree() = default;
+	~HuffmanTree();
+
+	void clear();
+	void clear(Node*);
 
 	HuffmanTree(const std::string& filePath);
 
-	void decode(const std::string& fileName);
-	void encode(const std::string& fileName);
-	void import(const std::string& fileName);
+	//void decode(const std::string& fileName);
+
+	void build(const std::string& fileName);
+
+	void save(const std::string& fileName);
+
+	void load(const std::string& fileName);
 
 	struct symbol {
-		Node* code;
+		BoolVector code;
 		int repeat;
 	};
 
@@ -29,13 +36,13 @@ public:
 	char charFromBool(const BoolVector) const;
 
 private:
-	Node* _encode(std::fstream& file, Node*, std::vector<bool>&);
-	Node* _decode(std::fstream& file, Node*, std::vector<bool>&);
 
-	void sort(std::vector<symbol>&) const;
+	void _export(std::fstream&, Node*);
+
+	void sort(std::vector<Node*>&) const;
 
 	std::string stringFromFile(const std::string& fileName) const;
-	std::vector<symbol> getList(const std::string& fileName) const;
+	std::vector<Node*> getList(const std::string& fileName) const;
 
 private:
 	Node* m_root;

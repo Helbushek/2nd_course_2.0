@@ -9,11 +9,10 @@ public:
 	Node();
 	~Node();
 
-	Node(const std::string& text);
 	Node(const char*);
 
-	BoolVector get() const;
-	void set(const BoolVector&);
+	symbol get() const;
+	void set(symbol);
 
 	void setLeft(Node*);
 	void setRight(Node*);
@@ -24,5 +23,5 @@ public:
 private:
 	Node* m_right;
 	Node* m_left;
-	BoolVector m_code;
+	HuffmanTree::symbol m_body;
 };
