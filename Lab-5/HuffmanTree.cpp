@@ -51,12 +51,15 @@ void HuffmanTree::build(const std::string& fileName) {
 	if (m_root != nullptr) {
 		return;
 	}
-	std::vector<Node*> list = getList(fileName);
+	std::vector<Node*> list;
+	getList(fileName, list);
 
 	while (list.size() > 1) { // MAKING TREE
-		Node* first = list.back();
+		Node* first = new Node();
+		*first = *list.back();
 		list.pop_back();
-		Node* second = list.back();
+		Node* second = new Node();
+		*second = *list.back();
 		list.pop_back();
 
 		Node* summ = new Node();
@@ -66,8 +69,18 @@ void HuffmanTree::build(const std::string& fileName) {
 		summ->set(temp);
 		summ->setLeft(first);
 		summ->setRight(second);
-		list.push_back(summ);
-		sort(list);
+		auto iter = list.begin();
+		for (int i = 0; i < list.size()-1; ++i) { // search through list
+			if (list[i + 1]->get().repeat < summ->get().repeat) { // if next node is smaller in repeats
+				list.push_back(nullptr); // grow list
+				for (int j = list.size() - 1; j > i+1; --j) { // shift everything to the right untill needed place
+					list[j] = list[j - 1];
+				}
+				list[i + 1] = summ; // on this place set the needed node
+				break; // finish insertion
+			}
+		}
+		summ = first = second = nullptr;
 	}
 
 	m_root = list.back();
@@ -105,7 +118,7 @@ void HuffmanTree::_export(std::fstream& file, Node* root) {
 				else {
 					file << static_cast<char>(i);
 				}
-				i = 257;
+				break;
 			}
 		}
 
@@ -142,8 +155,7 @@ char HuffmanTree::charFromBool(BoolVector vector) const {
 }
 
  
-std::vector<HuffmanTree::Node*> HuffmanTree::getList(const std::string& fileName) const  {
-	std::vector<Node*> result;
+void HuffmanTree::getList(const std::string& fileName, std::vector<HuffmanTree::Node*>& result) const  {
 	std::ifstream text(fileName);
 	int* TAB = new int [256];
 	for (int i = 0; i < 256; ++i) {
@@ -164,24 +176,28 @@ std::vector<HuffmanTree::Node*> HuffmanTree::getList(const std::string& fileName
 			Node* temp = new Node();
 			temp->set(symbol);
 			result.push_back(temp);
+			temp = nullptr;
+			delete temp;
 		}
 	}
 	sort(result);
 
-	return result;
+	return;
 }
 
 void HuffmanTree::sort(std::vector<Node*>& result) const {
 	if (result.empty()) {
 		return;
 	}  for (size_t i = 1; i < result.size(); i++) {
-		Node* key = result[i];
+		Node* key = new Node();
+		*key = *result[i];
 		size_t j = i - 1;  
 		while (j < result.size()-1 && result[j]->get().repeat < key->get().repeat) {
-			result[j + 1] = result[j];
+			*result[j + 1] = *result[j];
 			j--;
 		}  
-		result[j + 1] = key;
+		*result[j + 1] = *key;
+		delete key;
 	}
 
 }

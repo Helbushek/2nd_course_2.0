@@ -42,7 +42,7 @@ private:
 	void sort(std::vector<Node*>&) const;
 
 	std::string stringFromFile(const std::string& fileName) const;
-	std::vector<Node*> getList(const std::string& fileName) const;
+	void getList(const std::string& fileName, std::vector<Node*>&) const;
 
 private:
 	Node* m_root;
