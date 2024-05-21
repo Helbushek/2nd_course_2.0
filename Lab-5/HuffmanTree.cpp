@@ -34,6 +34,68 @@ void HuffmanTree::clear(Node* root)
 	delete root;
 }
 
+
+void HuffmanTree::decode(const std::string& importFile, const std::string& exportFile) {
+
+}
+
+void HuffmanTree::encode(const std::string& importFile, const std::string& exportFile) {
+	std::fstream file(importFile, std::ios::out);
+
+	file.seekg(0, std::ios_base::end);
+	int count = file.tellg();
+
+	char symbol;
+	
+	BoolVector vector(count, false);
+	int i = 0;
+	int tail;
+	file >> tail;
+	while (file) {
+		file >> symbol;
+		
+		Node* current = m_root;
+		BoolVector temp(8, false);
+		int j = 0;
+		while (current->left() && current->right()) {
+			if (current->left()->get().code[static_cast<int>(symbol)] == 1) {
+				current = current->left();
+				temp[j++] = 0;
+			}
+			else {
+				current = current->right();
+				temp[j++] = 1;
+			}
+		}
+
+		j = 0;
+		while (j < temp.sizeOf()) {
+			vector[i + j] = temp[j++];
+		}
+
+		++i;
+	}
+
+	file.close();
+	file.open(exportFile, std::ios::in);
+
+	for (int i = 0; i < vector.sizeOf()-8; i += 8) {
+		file << vector.getFirst();
+		vector <<= 8;
+	}
+	BoolVector temp(8, false);
+	for (int i = 0; i < 8-tail; ++i) {
+		temp[i] = vector[i];
+	}
+	char tempC = charFromBool(temp);
+	file << tempC;
+	file.close();
+
+	return;
+	
+}
+
+
 std::string HuffmanTree::stringFromFile(const std::string& fileName) const{
 	std::fstream file;
 	file.open(fileName.c_str(), std::ios::in|std::ios::binary);

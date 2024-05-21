@@ -61,6 +61,8 @@ public:
 
     int weight() const;
 
+    char getFirst() const;
+
     // Реализация побитовых операций
 
     const bool operator[](int index) const;

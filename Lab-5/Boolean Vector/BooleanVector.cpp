@@ -57,6 +57,12 @@ void BoolVector::setBit(const int index, const bool value) {
     }
 }
 
+char BoolVector::getFirst() const {
+    if (vector != nullptr) {
+        return vector[0];
+    }
+}
+
 bool BoolVector::getBit(const int index) const {
     if (index<0 || index>size) {
         std::cerr << "Incorrect index in BoolVector::getBit, I=" << index;

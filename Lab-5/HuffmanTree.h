@@ -19,7 +19,9 @@ public:
 
 	HuffmanTree(const std::string& filePath);
 
-	//void decode(const std::string& fileName);
+	void decode(const std::string& importFile, const std::string& exportFile);
+
+	void encode(const std::string& importFile, const std::string& exportFile);
 
 	void build(const std::string& fileName);
 
