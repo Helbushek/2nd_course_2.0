@@ -7,10 +7,7 @@ HuffmanTree::Node::Node() {
 	m_body.repeat = 0;
 }
 
-HuffmanTree::Node::~Node() {
-	delete m_right;
-	delete m_left;
-}
+HuffmanTree::Node::~Node() {}
 
 HuffmanTree::Node::Node(const char* text) {
 	m_right = nullptr;

@@ -30,7 +30,6 @@ public:
     BoolVector(const char* data);
     BoolVector(const BoolVector& other);
 
-
     ~BoolVector() {
        if (vector!=nullptr)
            delete[] vector;
@@ -61,7 +60,7 @@ public:
 
     int weight() const;
 
-    char getFirst() const;
+    unsigned char getFirst() const;
 
     // Реализация побитовых операций
 

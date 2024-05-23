@@ -1,4 +1,4 @@
-#include <ios>
+﻿#include <ios>
 #include <bitset>
 #include <algorithm>
 
@@ -35,28 +35,80 @@ void HuffmanTree::clear(Node* root)
 }
 
 
-void HuffmanTree::decode(const std::string& importFile, const std::string& exportFile) {
+bool HuffmanTree::decode(const std::string& importFile, const std::string& exportFile) {
+	if (m_root == nullptr) {
+		return false;
+	}
 
-}
-
-void HuffmanTree::encode(const std::string& importFile, const std::string& exportFile) {
-	std::fstream file(importFile, std::ios::out);
-
-	file.seekg(0, std::ios_base::end);
-	int count = file.tellg();
-
-	char symbol;
-	
-	BoolVector vector(count, false);
-	int i = 0;
+	std::fstream readFile(importFile, std::ios::in | std::ios::binary);
 	int tail;
-	file >> tail;
-	while (file) {
-		file >> symbol;
+	readFile >> tail;
+	std::fstream writeFile(exportFile, std::ios::out | std::ios::binary);
+
+	unsigned char temp;
+	std::string code;
+
+	readFile >> temp;
+	code = binary(temp);
+	int i = 0;
+	while (readFile) {
 		
 		Node* current = m_root;
-		BoolVector temp(8, false);
+		while (current->left() && current->right()) {
+			int leftOver = 0;
+			if (!readFile.good()) {
+				leftOver = tail;
+			}
+			if (i > 7-leftOver) {
+				if (!readFile) {
+					break;
+				}
+				if (leftOver == 0) {
+					readFile >> temp;
+					code = binary(temp);
+					i = 0;
+				}
+			}
+			if (code[i++] == '0') {
+				current = current->left();
+			}
+			else {
+				current = current->right();
+			}
+		}
+		BoolVector binary = current->get().code;
 		int j = 0;
+		while (binary[j++] != 1) {}
+		writeFile << static_cast<unsigned char>(j-1);
+
+	}
+
+	readFile.close();
+	writeFile.close();
+
+	return true;
+}
+
+double HuffmanTree::encode(const std::string& importFile, const std::string& exportFile) {
+	if (m_root == nullptr) {
+		return -1;
+	}
+
+	std::fstream firstFile(importFile, std::ios::in | std::ios::binary);
+	std::fstream secondFile(exportFile, std::ios::out | std::ios::binary | std::ios::in);
+	
+	Node* current;
+	unsigned char symbol;
+	int i = 0, j = 0;
+	secondFile.put('0');
+	int countUncrypted = 0, countCrypted = 0, tail=0;
+	BoolVector temp(8, false);
+	while (!firstFile.eof()) {
+		symbol = firstFile.get();
+		++countUncrypted;
+
+		current = m_root;
+		
 		while (current->left() && current->right()) {
 			if (current->left()->get().code[static_cast<int>(symbol)] == 1) {
 				current = current->left();
@@ -66,33 +118,37 @@ void HuffmanTree::encode(const std::string& importFile, const std::string& expor
 				current = current->right();
 				temp[j++] = 1;
 			}
+			if (j == 8) {
+				secondFile.put(temp.getFirst());
+				++countCrypted;
+				j = 0;
+				temp.setAll(false);
+			}
 		}
-
-		j = 0;
-		while (j < temp.sizeOf()) {
-			vector[i + j] = temp[j++];
+		if (j < 8 && firstFile.eof()) {
+			tail = 8 - j;
+			secondFile.put(temp.getFirst());
+		}
+		else if (j<8) {
+			continue;
 		}
 
 		++i;
 	}
+	current = nullptr;
 
-	file.close();
-	file.open(exportFile, std::ios::in);
+	firstFile.close();
 
-	for (int i = 0; i < vector.sizeOf()-8; i += 8) {
-		file << vector.getFirst();
-		vector <<= 8;
+	secondFile.seekp(0, std::ios::beg);
+	secondFile.put(tail+'0');
+
+	secondFile.close();
+
+	double compression = ((countCrypted *1.) / countUncrypted*1.) * 100.;
+	if (compression == 0) {
+		return -1;
 	}
-	BoolVector temp(8, false);
-	for (int i = 0; i < 8-tail; ++i) {
-		temp[i] = vector[i];
-	}
-	char tempC = charFromBool(temp);
-	file << tempC;
-	file.close();
-
-	return;
-	
+	return compression;
 }
 
 
@@ -116,35 +172,40 @@ void HuffmanTree::build(const std::string& fileName) {
 	std::vector<Node*> list;
 	getList(fileName, list);
 
+	Node* first, *second, *summ;
+	symbol temp;
 	while (list.size() > 1) { // MAKING TREE
-		Node* first = new Node();
-		*first = *list.back();
+		first = list.back();
 		list.pop_back();
-		Node* second = new Node();
-		*second = *list.back();
+		second = list.back();
 		list.pop_back();
 
-		Node* summ = new Node();
-		symbol temp;
+		summ = new Node();
+		
 		temp.code = (first->get().code | second->get().code);
 		temp.repeat = (first->get().repeat + second->get().repeat);
 		summ->set(temp);
 		summ->setLeft(first);
 		summ->setRight(second);
-		auto iter = list.begin();
-		for (int i = 0; i < list.size()-1; ++i) { // search through list
-			if (list[i + 1]->get().repeat < summ->get().repeat) { // if next node is smaller in repeats
-				list.push_back(nullptr); // grow list
-				for (int j = list.size() - 1; j > i+1; --j) { // shift everything to the right untill needed place
-					list[j] = list[j - 1];
-				}
-				list[i + 1] = summ; // on this place set the needed node
-				break; // finish insertion
-			}
-		}
-		summ = first = second = nullptr;
-	}
 
+		list.push_back(nullptr);
+		if (list.size() == 1) {
+			list[0] = summ;
+		}
+		for (int i=list.size()-1; i>0; --i) {
+			if (list[i - 1]->get().repeat >= summ->get().repeat) {
+				list[i] = summ;
+				break;
+			}
+			if (i == 1 && list[i - 1]->get().repeat < summ->get().repeat) {
+				list[i] = list[i - 1];
+				list[0] = summ;
+				break;
+			}
+			list[i] = list[i - 1];
+		}
+	}
+	
 	m_root = list.back();
 	list.pop_back();
 	return;
@@ -155,12 +216,8 @@ void HuffmanTree::save(const std::string& fileName) {
 }
 
 void HuffmanTree::load(const std::string & fileName) {
-	std::fstream file(fileName, std::ios::in);
-	if (!file) {
-		return;
-	}
-
-	if (m_root == nullptr) {
+	std::fstream file(fileName, std::ios::in | std::ios::binary);
+	if (!file || !m_root) {
 		return;
 	}
 
@@ -178,7 +235,7 @@ void HuffmanTree::_export(std::fstream& file, Node* root) {
 					file << i;
 				}
 				else {
-					file << static_cast<char>(i);
+					file << static_cast<unsigned char>(i);
 				}
 				break;
 			}
@@ -206,26 +263,26 @@ std::string HuffmanTree::binary(unsigned x) const
 	return s;
 }
 
-char HuffmanTree::charFromBool(BoolVector vector) const {
+unsigned char HuffmanTree::charFromBool(BoolVector vector) const {
 	int code = 0;
 	int pow = 1;
 	for (int i = 0; i < 8; ++i) {
 		code += vector[i] * pow;
 		pow *= 2;
 	}
-	return static_cast<char>(code);
+	return static_cast<unsigned char>(code);
 }
 
  
 void HuffmanTree::getList(const std::string& fileName, std::vector<HuffmanTree::Node*>& result) const  {
-	std::ifstream text(fileName);
+	std::fstream text(fileName, std::ios::in | std::ios::binary);
 	int* TAB = new int [256];
 	for (int i = 0; i < 256; ++i) {
 		TAB[i] = 0;
 	}
 
 	while (text.good()) {
-		char C = text.get();
+		unsigned char C = text.get();
 		TAB[static_cast<int>(C)] += 1;
 	}
 

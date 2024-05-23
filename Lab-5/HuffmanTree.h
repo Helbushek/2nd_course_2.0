@@ -19,9 +19,9 @@ public:
 
 	HuffmanTree(const std::string& filePath);
 
-	void decode(const std::string& importFile, const std::string& exportFile);
+	bool decode(const std::string& importFile, const std::string& exportFile);
 
-	void encode(const std::string& importFile, const std::string& exportFile);
+	double encode(const std::string& importFile, const std::string& exportFile);
 
 	void build(const std::string& fileName);
 
@@ -35,7 +35,7 @@ public:
 	};
 
 	std::string binary(unsigned x) const;
-	char charFromBool(const BoolVector) const;
+	unsigned char charFromBool(const BoolVector) const;
 
 private:
 

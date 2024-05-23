@@ -57,7 +57,7 @@ void BoolVector::setBit(const int index, const bool value) {
     }
 }
 
-char BoolVector::getFirst() const {
+unsigned char BoolVector::getFirst() const {
     if (vector != nullptr) {
         return vector[0];
     }
@@ -165,7 +165,7 @@ BoolVector BoolVector::operator|(const BoolVector& other) const{
     int min = temp.size;
     if (temp.size > other.size) min = other.size;
     for (int i = 0; i <= min; i+=CELL_SIZE) {
-        temp.vector[i] |= other.vector[i];
+        temp.vector[i / CELL_SIZE] |= other.vector[i / CELL_SIZE];
     }
     return temp;
 }
