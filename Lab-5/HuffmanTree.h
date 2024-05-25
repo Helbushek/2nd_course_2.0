@@ -39,6 +39,8 @@ public:
 
 private:
 
+	void _build(std::vector<Node*>& list);
+
 	void _export(std::fstream&, Node*);
 
 	void sort(std::vector<Node*>&) const;

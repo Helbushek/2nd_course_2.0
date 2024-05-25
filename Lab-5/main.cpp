@@ -5,8 +5,10 @@
 
 int main() {
 	HuffmanTree test;
-	test.build("testFile.txt");
-	//test.load("result.txt");
-	test.encode("testFile.txt", "result.txt");
+	test.build("userFile.txt");
+	test.save("TAB.txt");
+	HuffmanTree loadTest;
+	loadTest.load("TAB.txt");
+	loadTest.save("TAB2.txt");
 	return 0;
 }
