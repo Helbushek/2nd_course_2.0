@@ -75,7 +75,7 @@ bool HuffmanTree::decode(const std::string& inputFileName, const std::string& ou
 	BoolVector code(8, false);
 	Node* current = nullptr;
 	int i = -1;
-	while (inputData.peek()!=EOF || (inputData.peek() == EOF && i>0 && i<8-tail)) {
+	while (inputData.peek() != EOF || (inputData.peek() == EOF && i >= 0 && i < 8 - tail)) {
 		if (i == -1) {
 			symbol = inputData.get();
 			string = binary(symbol);
@@ -86,11 +86,11 @@ bool HuffmanTree::decode(const std::string& inputFileName, const std::string& ou
 
 		current = m_root;
 		while (current->left() || current->right()) {
-			if (inputData.peek()!=EOF) {
+			if (inputData.peek() != EOF) {
 				if (code[i] == 0 && current->left()) {
 					current = current->left();
 				}
-				else if (code[i] == 1 && current->right()){
+				else if (code[i] == 1 && current->right()) {
 					current = current->right();
 				}
 				++i;
@@ -105,7 +105,7 @@ bool HuffmanTree::decode(const std::string& inputFileName, const std::string& ou
 				++i;
 			}
 
-			if (i >= 8 && inputData.peek()!=EOF) {
+			if (i >= 8 && inputData.peek() != EOF) {
 				symbol = inputData.get();
 				string = binary(symbol);
 				std::reverse(string.begin(), string.end());
@@ -113,10 +113,32 @@ bool HuffmanTree::decode(const std::string& inputFileName, const std::string& ou
 				i = i % 8;
 			}
 		}
-		if (current == m_root) { ++i; }
-		int j = 0;
-		while (!current->get().code[j++]==1);
-		outputData.put(static_cast<unsigned char>(j-1));
+		if (!m_root->right() && !m_root->left()) {
+			int j = 0;
+			while (!m_root->get().code[j++] == 1);
+			outputData.put(static_cast<unsigned char>(j - 1));
+			++i;
+			if (i >= 8 && inputData.peek() != EOF) {
+				symbol = inputData.get();
+				string = binary(symbol);
+				std::reverse(string.begin(), string.end());
+				code = BoolVector(string.c_str());
+				i = i % 8;
+			}
+			if (inputData.peek() == EOF) {
+				for (i = 0; i < 8 - tail; ++i) {
+					int j = 0;
+					while (!m_root->get().code[j++] == 1);
+					outputData.put(static_cast<unsigned char>(j - 1));
+				}
+			}
+		}
+		else {
+			if (current == m_root) { ++i; }
+			int j = 0;
+			while (!current->get().code[j++] == 1);
+			outputData.put(static_cast<unsigned char>(j - 1));
+		}
 	}
 
 	inputData.close();
@@ -127,7 +149,7 @@ bool HuffmanTree::decode(const std::string& inputFileName, const std::string& ou
 
 double HuffmanTree::encode(const std::string& importFile, const std::string& exportFile) {
 	if (m_root == nullptr) {
-		return -1;
+		build(importFile);
 	}
 
 	std::fstream firstFile(importFile, std::ios::in | std::ios::binary);
@@ -166,7 +188,6 @@ double HuffmanTree::encode(const std::string& importFile, const std::string& exp
 		++countUncrypted;
 
 		current = m_root;
-		
 		while (current->left() || current->right()) {
 			if (current->left()->get().code[static_cast<int>(symbol)] == 1) {
 				current = current->left();
@@ -184,6 +205,12 @@ double HuffmanTree::encode(const std::string& importFile, const std::string& exp
 			}
 		}
 		if (current == m_root) { ++j; }
+		if (j == 8) {
+			secondFile.put(temp.getFirst());
+			++countCrypted;
+			j = 0;
+			temp.setAll(false);
+		}
 		if (j < 8 && firstFile.peek()==EOF) {
 			tail = (8 - j)%8;
 			secondFile.put(temp.getFirst());
