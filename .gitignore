@@ -6,6 +6,10 @@
 ## I WAS HERE
 
 build-HashTable-Desktop_Qt_5_15_2_MinGW_64_bit-Debug
+.qtc_clangd
+Makefile
+Makefile.Debug
+Makefile.Release
 
 # User-specific files
 *.rsuser
