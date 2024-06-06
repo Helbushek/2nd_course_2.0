@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QObject>
 
 namespace Ui {
 class HashTableCell;
@@ -13,7 +14,7 @@ class HashTableCell : public QWidget
         public:
           explicit HashTableCell(QWidget *parent = nullptr);
 
-          HashTableCell(const HashTableCell &other);
+          HashTableCell(QWidget *parent, const HashTableCell &other);
           HashTableCell operator=(const HashTableCell &other);
 
           ~HashTableCell();

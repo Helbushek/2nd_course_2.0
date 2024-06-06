@@ -1,48 +1,52 @@
 #pragma once
 
-#include <QWidget>
-#include <QGridLayout>
-#include <QTableWidget>
-#include <QVector>
-#include <QList>
+#include <vector>
+#include <list>
+#include <string>
 
-#include <ui_HashTableCell.h>
-#include "HashTableCell.h"
 #include "HashFunction.h"
 
-class QGridLayout;
-
-class HashTableWidget : public QWidget
+struct pair
 {
-    Q_OBJECT
+    int key;
+    std::string value;
+};
+
+struct coordinates
+{
+    int x;
+    int y;
+};
+
+class HashTable
+{
   public:
-    HashTableWidget(QWidget *parent = nullptr);
-    ~HashTableWidget();
+    HashTable();
+    HashTable(const HashTable &other);
+    ~HashTable();
 
-  signals:
-    void sendMessage(QString message) const;
+    int size();
 
-  public slots:
-    void addItem(int key, const QString &value);
-    bool removeItem(int key);
-    QRect findItem(int key);
-    bool resize(int size);
-    bool chooseHash(int index);
+    void clear();
 
-  protected:
-    void paintEvent(QPaintEvent *event);
+    coordinates operator[](int key);
+    pair *operator()(coordinates);
+    void print();
+    std::vector<pair *>* at(int index);
 
-  private slots:
-    int onValueChanged(HashTableCell *item);
+    coordinates addItem(int key, const std::string &value);
+    std::string removeItem(int key);
+
+    coordinates findItem(int key);
+
+    std::string resize(int size);
+    std::string chooseHash(int index);
 
   private:
-    int* foundCell = nullptr;
     HashFunction *m_hash = new HashFunctionOne();
     int m_hash_index = 0;
-    static const int connectionOffset = 50;
-    static const int arrowHeadWidth = 3;
-    static const int arrowHeadHeight = 3;
 
-    QVector<QList<HashTableCell*>*> m_items;
-    QGridLayout *m_layout = nullptr;
+    static const int arrowLength = 3;
+
+    std::vector<std::vector<pair*>*> m_items;
 };

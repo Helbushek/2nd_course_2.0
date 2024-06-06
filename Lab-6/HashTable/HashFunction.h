@@ -4,7 +4,7 @@
 class HashFunction
 {
   public:
-    ~HashFunction() = default;
+    virtual ~HashFunction() = default;
     virtual int hash(int key, int size) = 0;
 };
 
@@ -22,7 +22,7 @@ class HashFunctionTwo : public HashFunction
   public:
     int hash(int key, int size) override
     {
-        return ((key % size) * (-(1 - sqrt(5)) / 2) * size);
+        return ((int)((key % size) * (-(1 - sqrt(5)) / 2) * size))%size;
     }
 };
 
@@ -32,8 +32,8 @@ class HashFunctionThree : public HashFunction
     int hash(int key, int size) override
     {
         if (size==2) {
-            return (key%size + 1%size);
+            return (key%size + 1%size)%size;
         }
-        return (key%size + (1+key%(size-2))%size);
+        return ((key%size + (1+key%(size-2)))%size);
     }
 };
