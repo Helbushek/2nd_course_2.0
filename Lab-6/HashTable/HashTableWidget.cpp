@@ -82,8 +82,9 @@ bool HashTableWidget::removeItem(const int key)
         return false;
     }
 
-    std::string message = m_items.removeItem(key);
-    sendMessage(QString::fromStdString(message));
+    sendMessage(QString::fromStdString(m_items.removeItem(key)));
+    resize(m_items.size());
+    update();
     return true;
 }
 
