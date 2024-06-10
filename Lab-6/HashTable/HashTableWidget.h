@@ -50,6 +50,6 @@ class HashTableWidget : public QWidget
     static const int arrowHeadWidth = 10;
     static const int arrowHeadHeight = 10;
 
-    HashTable m_items;
+    HashTable<std::string> m_items;
     QGridLayout *m_layout = nullptr;
 };

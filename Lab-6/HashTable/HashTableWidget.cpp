@@ -145,7 +145,7 @@ bool HashTableWidget::resize(int size)
             m_layout->addWidget(temp, i, j);
         }
     }
-
+    update();
     sendMessage("success: resize");
     return true;
 }
@@ -154,7 +154,6 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
     QPainter painter(this);
-
     for (int j = 0; j < m_items.size(); ++j)
     {
         for (int i = 0; i < m_items.at(j)->size(); ++i)
@@ -190,6 +189,7 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
 
 int HashTableWidget::onValueChanged(HashTableCell *item)
 {
+    m_items.changeValue(item->key(), item->value().toStdString());
     qDebug() << item->value();
 }
 
