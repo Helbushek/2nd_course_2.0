@@ -5,6 +5,12 @@
 
 ## I WAS HERE
 
+build-*/
+.qtc_clangd
+Makefile
+Makefile.Debug
+Makefile.Release
+
 # User-specific files
 *.rsuser
 *.suo
