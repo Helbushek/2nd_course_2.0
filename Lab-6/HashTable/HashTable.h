@@ -8,22 +8,24 @@
 #include "HashFunction.h"
 
 template<typename T>
-struct pair
-{
-    int key;
-    T value;
-};
-
-struct coordinates
-{
-    int x;
-    int y;
-};
-
-template<typename T>
 class HashTable
 {
   public:
+
+    struct pair
+    {
+        int key;
+        T value;
+    };
+
+    struct coordinates
+    {
+        int x;
+        int y;
+    };
+
+  public:
+
     HashTable();
     HashTable(const HashTable &other);
     ~HashTable();
@@ -32,19 +34,19 @@ class HashTable
 
     void clear();
 
-    coordinates operator[](int key);
-    pair<T> *operator()(coordinates);
+    T operator[](int key);
+    pair *operator()(coordinates);
     HashTable operator=(const HashTable &other);
     void print();
-    std::vector<pair<T> *>* at(int index);
+    int rowSize(int row);
 
     coordinates addItem(int key, const T &value);
-    std::string removeItem(int key);
+    bool removeItem(int key);
 
     coordinates findItem(int key);
 
-    std::string resize(int size);
-    std::string chooseHash(int index);
+    bool resize(int size);
+    bool chooseHash(int index);
 
     bool changeValue(int key, T value);
 
@@ -52,9 +54,9 @@ class HashTable
     HashFunction *m_hash = new HashFunctionOne();
     int m_hash_index = 0;
 
-    static const int arrowLength = 3;
+    static constexpr int arrowLength = 3;
 
-    std::vector<std::vector<pair<T>*>*> m_items;
+    std::vector<std::vector<pair*>*> m_items;
 };
 
 template <typename T> HashTable<T>::HashTable()
@@ -78,14 +80,14 @@ template <typename T> HashTable<T>::~HashTable()
     }
 }
 
-template <typename T> coordinates HashTable<T>::addItem(int key, const T &value)
+template <typename T> typename HashTable<T>::coordinates HashTable<T>::addItem(int key, const T &value)
 {
+    coordinates cords;
     if (!m_items.size())
     {
-        coordinates temp;
-        temp.x = -1;
-        temp.y = -1;
-        return temp;
+        cords.x = -1;
+        cords.y = -1;
+        return cords;
     }
     if (findItem(key).x != -1 || findItem(key).y != -1)
     {
@@ -93,11 +95,10 @@ template <typename T> coordinates HashTable<T>::addItem(int key, const T &value)
     }
 
     int row = m_hash->hash(key, m_items.size());
-    pair<T> *temp = new pair<T>();
+    pair *temp = new pair();
     temp->key = key;
     temp->value = value;
     m_items[row]->push_back(temp);
-    coordinates cords;
     cords.y = row;
     cords.x = m_items[row]->size() - 1;
     return cords;
@@ -116,11 +117,11 @@ template <typename T> HashTable<T> HashTable<T>::operator=(const HashTable<T> &o
     return *this;
 }
 
-template <typename T> std::string HashTable<T>::removeItem(const int key)
+template <typename T> bool HashTable<T>::removeItem(const int key)
 {
     if (!m_items.size())
     {
-        return "size is 0";
+        return false;
     }
 
     int row = m_hash->hash(key, m_items.size());
@@ -132,13 +133,14 @@ template <typename T> std::string HashTable<T>::removeItem(const int key)
             iter += i;
             m_items[row]->erase(iter);
             resize(m_items.size());
-            return "success: remove";
+            return true;
         }
     }
-    return "fail remove: item not found";
+    return false;
 }
 
-template <typename T> coordinates HashTable<T>::findItem(int key)
+template <typename T>
+typename HashTable<T>::coordinates HashTable<T>::findItem(int key)
 {
     int i = m_hash->hash(key, m_items.size());
     for (int j = 0; j < m_items[i]->size(); ++j)
@@ -156,14 +158,10 @@ template <typename T> coordinates HashTable<T>::findItem(int key)
     return temp;
 }
 
-template <typename T> coordinates HashTable<T>::operator[](int key)
+template <typename T> T HashTable<T>::operator[](int key)
 {
-    return findItem(key);
-}
-
-template <typename T> std::vector<pair<T> *> *HashTable<T>::at(int index)
-{
-    return m_items[index];
+    coordinates cords = findItem(key);
+    return (*m_items[cords.x])[cords.y];
 }
 
 template <typename T> void HashTable<T>::clear()
@@ -178,18 +176,18 @@ template <typename T> void HashTable<T>::clear()
     }
 }
 
-template <typename T> std::string HashTable<T>::resize(int size)
+template <typename T> bool HashTable<T>::resize(int size)
 {
     if (size < 0)
     {
-        return "invalid size: size should be 0 or more";
+        return false;
     }
-    std::vector<pair<T> *> temp;
+    std::vector<pair *> temp;
     for (int i = 0; i < m_items.size(); ++i)
     {
         for (int j = 0; j < m_items[i]->size(); ++j)
         {
-            pair<T> *tempCell = new pair<T>();
+            pair *tempCell = new pair();
             tempCell->key = (*m_items[i])[j]->key;
             tempCell->value = (*m_items[i])[j]->value;
             temp.push_back(tempCell);
@@ -203,21 +201,21 @@ template <typename T> std::string HashTable<T>::resize(int size)
     m_items.resize(size);
     for (int i = 0; i < size; ++i)
     {
-        m_items[i] = new std::vector<pair<T> *>();
+        m_items[i] = new std::vector<pair *>();
     }
 
     for (int i = 0; i < temp.size(); ++i)
     {
         addItem(temp[i]->key, temp[i]->value);
     }
-    return ("success: resize");
+    return true;
 }
 
-template <typename T> std::string HashTable<T>::chooseHash(int index)
+template <typename T> bool HashTable<T>::chooseHash(int index)
 {
     if (index < 0 || index > 2)
     {
-        return "fail: index out of range";
+        return false;
     }
     else
     {
@@ -231,20 +229,20 @@ template <typename T> std::string HashTable<T>::chooseHash(int index)
         case 0: {
             m_hash = new HashFunctionOne();
             resize(m_items.size());
-            return "success: hash One";
+            return true;
         }
         case 1: {
             m_hash = new HashFunctionTwo();
             resize(m_items.size());
-            return "success: hash One";
+            return true;
         }
         case 2: {
             m_hash = new HashFunctionThree();
             resize(m_items.size());
-            return "success: hash One";
+            return true;
         }
         default: {
-            return "failure: unknown";
+            return false;
         }
         }
     }
@@ -275,16 +273,20 @@ template <typename T> void HashTable<T>::print()
     }
 }
 
-template <typename T> pair<T> *HashTable<T>::operator()(coordinates coord)
+template <typename T> typename HashTable<T>::pair *HashTable<T>::operator()(coordinates coord)
 {
     return (*m_items[coord.x])[coord.y];
 }
 
 template <typename T> bool HashTable<T>::changeValue(int key, T value)
 {
-    coordinates coords = this->operator[](key);
+    coordinates coords = this->findItem(key);
     (*m_items[coords.x])[coords.y]->value = value;
 }
 
+template <typename T> int HashTable<T>::rowSize(int row)
+{
+    return static_cast<int>(m_items[row]->size());
+}
 
 

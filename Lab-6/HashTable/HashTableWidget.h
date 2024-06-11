@@ -42,7 +42,7 @@ class HashTableWidget : public QWidget
     void paintEvent(QPaintEvent *event);
 
   private slots:
-    int onValueChanged(HashTableCell *item);
+    void onValueChanged(HashTableCell *item);
 
   private:
     int *foundCell = nullptr;

@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->hashTable, &HashTableWidget::sendMessage, this, &MainWindow::printMessage);
     connect(ui->hashTable, &HashTableWidget::scroll, this, [this](QRect item) {
-        ui->scrollArea->ensureVisible(item.x(), item.y(), item.width()+10, item.height()+10);
+        ui->scrollArea->ensureVisible(item.x(), item.y(), item.width()+20, item.height()+20);
     });
 
     ui->comboBoxHash->addItem("hi(K) = (hi-1(K) + c × i + d × i2) mod N");
@@ -48,6 +48,12 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
+//    int size = 154;
+//    ui->spinBoxTableSize->setValue(154);
+//    for (int i = 0; i < size; ++i)
+//    {
+//        ui->hashTable->addItem(rand(), "");
+//    }
 }
 
 MainWindow::~MainWindow()

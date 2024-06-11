@@ -39,7 +39,10 @@ HashTableWidget::HashTableWidget(QWidget *parent, const HashTableWidget &other) 
 
 HashTableWidget::~HashTableWidget()
 {
-    resize(0);
+    if (foundCell)
+    {
+        delete foundCell;
+    }
 }
 
 void HashTableWidget::addItem(int key, const QString &value)
@@ -49,12 +52,11 @@ void HashTableWidget::addItem(int key, const QString &value)
         sendMessage("size is 0");
         return;
     }
-    coordinates find = m_items.findItem(key);
+    HashTable<std::string>::coordinates find = m_items.findItem(key);
     if (find.x != -1 || find.y != -1)
     {
         sendMessage("failure: add item allready exists");
-        QWidget widget(m_layout->itemAtPosition(find.x, find.y)->widget());
-        QRect rect(widget.x(), widget.y(), widget.width(), widget.height());
+        QRect rect(m_layout->itemAtPosition(find.x, find.y)->geometry());
         if (foundCell)
         {
             delete foundCell;
@@ -65,7 +67,7 @@ void HashTableWidget::addItem(int key, const QString &value)
         update();
         return;
     }
-    coordinates add = m_items.addItem(key, value.toStdString());
+    HashTable<std::string>::coordinates add = m_items.addItem(key, value.toStdString());
     HashTableCell *temp = new HashTableCell(this);
     temp->setKey(key);
     temp->setValue(value);
@@ -82,7 +84,18 @@ bool HashTableWidget::removeItem(const int key)
         return false;
     }
 
-    sendMessage(QString::fromStdString(m_items.removeItem(key)));
+    bool code = m_items.removeItem(key);
+    if (code) {
+        sendMessage(QString::fromStdString("success: remove item"));
+    }
+    else {
+        if (m_items.size()==0) {
+            sendMessage(QString::fromStdString("fail: size is 0"));
+        }
+        else {
+            sendMessage(QString::fromStdString("fail: item not found"));
+        }
+    }
     resize(m_items.size());
     update();
     return true;
@@ -90,15 +103,15 @@ bool HashTableWidget::removeItem(const int key)
 
 QPair<int, int> HashTableWidget::findItem(int key)
 {
-    coordinates find = m_items.findItem(key);
+    HashTable<std::string>::coordinates find = m_items.findItem(key);
+    if (foundCell)
+    {
+        delete foundCell;
+        foundCell = nullptr;
+    }
     if (find.x == -1 || find.y == -1)
     {
         sendMessage("failure find: no such item");
-        if (foundCell)
-        {
-            delete foundCell;
-            foundCell = nullptr;
-        }
         update();
         return QPair<int, int>(-1, -1);
     }
@@ -106,11 +119,6 @@ QPair<int, int> HashTableWidget::findItem(int key)
     {
         QString message = "success find: " + QString::number(find.x) + " | " + QString::number(find.y);
         sendMessage(message);
-        if (foundCell)
-        {
-            delete foundCell;
-            foundCell = nullptr;
-        }
         foundCell = new int(key);
         update();
         return QPair<int, int>(find.x, find.y);
@@ -130,18 +138,23 @@ bool HashTableWidget::resize(int size)
         delete item->widget();
         delete item;
     }
-    m_items.resize(size);
+    bool code = m_items.resize(size);
+    if (!code)
+    {
+        sendMessage("fail: size is invalid");
+    }
 
     for (int i = 0; i < m_items.size(); ++i)
     {
-        for (int j = 0; j < m_items.at(i)->size(); ++j)
+        for (int j = 0; j < m_items.rowSize(i); ++j)
         {
             HashTableCell *temp = new HashTableCell(this);
-            coordinates cords;
+            HashTable<std::string>::coordinates cords;
             cords.x = i;
             cords.y = j;
             temp->setKey(m_items(cords)->key);
             temp->setValue(QString::fromStdString(m_items(cords)->value));
+            connect(temp, &HashTableCell::valueChanged, this, &HashTableWidget::onValueChanged);
             m_layout->addWidget(temp, i, j);
         }
     }
@@ -156,10 +169,10 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     for (int j = 0; j < m_items.size(); ++j)
     {
-        for (int i = 0; i < m_items.at(j)->size(); ++i)
+        for (int i = 0; i < m_items.rowSize(j); ++i)
         {
             QWidget *item = m_layout->itemAtPosition(j, i)->widget();
-            coordinates cords;
+            HashTable<std::string>::coordinates cords;
             cords.x = j;
             cords.y = i;
             if (foundCell && m_items(cords)->key == *foundCell)
@@ -168,7 +181,7 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
                 painter.drawRect(item->x() - 1, item->y() - 1, item->width() + 2, item->height() + 2);
                 painter.setPen(Qt::black);
             }
-            if (i < static_cast<int>(m_items.at(j)->size()) - 1)
+            if (i < static_cast<int>(m_items.rowSize(j)) - 1)
             {
                 QPoint itemBorder(item->x() + item->width(), item->y() + (item->height() / 2));
 
@@ -187,10 +200,10 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
     }
 }
 
-int HashTableWidget::onValueChanged(HashTableCell *item)
+void HashTableWidget::onValueChanged(HashTableCell *item)
 {
     m_items.changeValue(item->key(), item->value().toStdString());
-    qDebug() << item->value();
+    update();
 }
 
 void HashTableWidget::print()
@@ -200,7 +213,21 @@ void HashTableWidget::print()
 
 void HashTableWidget::chooseHash(int index)
 {
-    sendMessage(QString::fromStdString(m_items.chooseHash(index)));
+    bool code = m_items.chooseHash(index);
+    if (!code)
+    {
+        if (index < 0 || index > 2)
+        {
+            sendMessage(QString::fromStdString("fail: index out of range"));
+        }
+        else {
+            sendMessage(QString::fromStdString("fail: unknown error"));
+        }
+
+    }
+    else {
+        sendMessage(QString::fromStdString("success: change hash"));
+    }
     resize(m_items.size());
 }
 

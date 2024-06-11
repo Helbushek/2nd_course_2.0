@@ -7,7 +7,10 @@ HashTableCell::HashTableCell(QWidget *parent) : QWidget(parent), ui(new Ui::Hash
 {
     ui->setupUi(this);
 
-    connect(ui->lineEditValue, &QLineEdit::editingFinished, this, [this]() { valueChanged(this); });
+    connect(ui->lineEditValue, &QLineEdit::editingFinished, this, [this]() {
+        qDebug() << "editing finished, value=" << ui->lineEditValue->text();
+        valueChanged(this);
+    });
 
 }
 
